@@ -1,0 +1,55 @@
+.md-editor-copy-button{
+    font-weight: bold !important;
+}
+.md-editor-code-lang{
+    font-weight: bold;
+}
+#preview-only{
+    :is(h1), :is(h2), :is(h3), :is(h4), :is(h5), :is(h6),
+    :is(ul), :is(ol), :is(p), :is(li) {
+        color: var(--var-c-text)
+    }
+}
+h1, h2, h3, h4, h5, h6{
+    cursor: pointer;
+    width: fit-content;
+}
+.dark .md-editor-code{
+    .md-editor-code-head, :is(code) {
+        background-color: rgba(40, 44, 52, 0.8) !important;
+    }
+}
+.md-editor-code{
+    border-radius: 12px !important;
+}
+/* 文章 */
+#preview-only{
+    background-color: transparent;
+    color: white;
+}
+.md-editor-copy-button{
+    font-weight: bold !important;
+}
+.md-editor-code-lang{
+    font-weight: bold;
+}
+.dark .md-editor-code{
+    .md-editor-code-head, :is(code){
+        background-color: rgba(40, 44, 52, 0.8) !important;
+    }
+}
+.md-editor-code{
+    border-radius: 12px !important;
+}
+.md-editor-previewOnly{
+    background-color: transparent !important;
+}
+.md-editor-catalog-active > span{
+    color: var(--var-c-hover-text) !important;
+}
+.md-editor-catalog-link span:hover {
+    color: var(--var-c-hover-text) !important;
+}
+.md-editor-catalog-indicator{
+    background-color: var(--var-c-hover-text) !important;
+}

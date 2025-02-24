@@ -4,7 +4,7 @@ import {reactive, ref} from "vue";
 /*
     WakatimeConfig
     You can automatically change this by using wakatimeAPI -> _doc(https://wakatime.com/developers)
-    Or just dump the data at Settings->Account->Export
+    Or just simply dump the data at Settings->Account->Export
  */
 import WakatimeLastWeekStats from '@/resources/wakatime_stats_last_week.json'
 import WakatimeLastMonthStats from "@/resources/wakatime_stats_last_month.json"
@@ -25,7 +25,6 @@ export const useAppStore = defineStore('app', ()=>{
 
         // Mobile Handler Start
     function handleDeviceState() {
-        //
         is_mobile.value = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent);
     }
     function isMobile() {

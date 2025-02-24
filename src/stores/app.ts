@@ -1,5 +1,11 @@
 import {defineStore} from "pinia";
 import {reactive, ref} from "vue";
+
+/*
+    WakatimeConfig
+    You can automatically change this by using wakatimeAPI -> _doc(https://wakatime.com/developers)
+    Or just dump the data at Settings->Account->Export
+ */
 import WakatimeLastWeekStats from '@/resources/wakatime_stats_last_week.json'
 import WakatimeLastMonthStats from "@/resources/wakatime_stats_last_month.json"
 import WakatimeTotalTimeStats from "@/resources/wakatime_stats_total_time.json"

@@ -1,6 +1,7 @@
-# momosachi_blog_v1
+# momosachi_blog_v2
 
 This template should help get you started developing with Vue 3 in Vite.
+And It's a refactor of MomosachiBlogV1 with better page design and a clear code specification
 
 ## Recommended IDE Setup
 

@@ -75,6 +75,7 @@ import {useAppStore} from "@/stores";
 import {getCurrentLikeState, setLikeState} from "@/utils/local-storage";
 import {ArticleLikeState, ResponseCode} from "@/constant/app-key";
 import {ElMessage, ElMessageBox} from "element-plus";
+import CommentCard from "@/components/card/CommentCard.vue";
 
 const md_state = reactive({
     text: articleData.value.article.content,
@@ -226,6 +227,7 @@ onUnmounted(()=>{
                 </div>
             </div>
             <!-- 其余信息 -->
+            <CommentCard :article-pid="articleData.article.pid" />
         </div>
         <div class="side-bar" v-if="side_bar_visibility" :style="`min-height: ${cardSetHeight}px`">
             <div class="side-bar-card-set" :style="sideBarClass">

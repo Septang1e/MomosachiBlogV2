@@ -1,143 +1,207 @@
 <script lang="ts" setup>
 import {useAppStore} from "@/stores";
-const appStore = useAppStore()
+import {ElInput, ElButton, ElLoading} from 'element-plus'
 import CoverSideImg from "@/assets/bg/A.jpg"
 import {ref} from "vue";
+import {Lock, User} from "@element-plus/icons-vue";
+
+const appStore = useAppStore()
 const login_form = ref({
     username: '',
     password: ''
 })
-function usernameTypeCheck() {
+const isLoading = ref(false)
+const isError = ref(false)
 
+async function handleLogin() {
+    isLoading.value = true
+    try {
+        // TODO 登录请求、后端重构
+
+    } catch (e) {
+        isError.value = true
+    } finally {
+        isLoading.value = false
+    }
 }
-function passwordTypeCheck() {
-
-}
-
-
 </script>
 
 <template>
-    <div class="login-wrap">
-<!--        <div class="cover-side" v-if="!appStore.isMobile()">-->
-<!--            <el-image fit="cover" class="cover-side-img" :src="CoverSideImg"/>-->
-<!--        </div>-->
-        <div class="login-side">
-            <div class="logo">
-                <el-icon class="bx bx-home"/> MomosachiBlog
-            </div>
-            <div class="login-text">
-                欢迎来到MomosachiBlogBackend
-            </div>
-            <div class="login-username">
-                <div class="placeholder">
-                    用户名
+    <div class="login-container">
+        <div class="login-card">
+            <div class="card-header">
+                <div class="logo">
+                    <el-icon class="bx bx-home"/>
+                    <span style="font-weight: bold">MomosachiBlog</span>
                 </div>
-                <input class="input-login"/>
+                <h2 style="width: 100%; display: flex; align-items: center; justify-content: center">
+                    Welcome to MomosachiBlog
+                </h2>
             </div>
-            <div class="login-password">
-                <div class="placeholder">
-                    密码
-                </div>
-                <input class="input-login"/>
+
+            <div class="card-body">
+                <el-form
+                    :model="login_form"
+                    :class="{'error-state': isError}"
+                    @submit.prevent="handleLogin"
+                >
+                    <el-form-item>
+                        <el-input
+                            v-model="login_form.username"
+                            placeholder="用户名"
+                            size="large"
+                            :disabled="isLoading"
+                        >
+                            <template #prefix>
+                                <el-icon><user /></el-icon>
+                            </template>
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-input
+                            v-model="login_form.password"
+                            type="password"
+                            placeholder="密码"
+                            size="large"
+                            show-password
+                            :disabled="isLoading"
+                        >
+                            <template #prefix>
+                                <el-icon><lock /></el-icon>
+                            </template>
+                        </el-input>
+                    </el-form-item>
+
+                    <el-button
+                        native-type="submit"
+                        type="primary"
+                        size="large"
+                        :loading="isLoading"
+                        class="login-btn"
+                    >
+                        {{ isLoading ? '登录中...' : '立即登录' }}
+                    </el-button>
+                </el-form>
             </div>
-            <div class="login-btn">
-                登录
+
+            <div class="card-footer">
+                <span class="tip-text">忘记密码？</span>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-.error-border{
-    border: red solid 1px;
-}
-.success-border{
-    border: greenyellow solid 1px;
-}
-.hover-border{
-    border: var(--var-c-hover-text) solid 1px;
-}
-.login-wrap{
+.login-container {
     display: flex;
-    align-items: center;
     justify-content: center;
-    border-radius: 30px;
+    align-items: center;
+    height: calc(100vh - 50px - 75px);
+    background: linear-gradient(135deg, var(--var-c-bg-main) 0%, var(--var-c-bg-secondary) 100%);
+    width: 100vw;
 }
-.cover-side{
-    height: 400px;
-    width: 450px;
-    overflow: clip;
-    border-radius: 30px 0 0 30px;
-}
-.login-side{
-    border-radius: 15px;
-    overflow: clip;
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
     background: var(--var-c-bg-main);
-    display: flex;
-    padding: 60px;
+    border-radius: 1.5rem;
     box-shadow: var(--var-card-box-shadow);
-    margin: 12px;
-    flex-direction: column;
-    flex-wrap: wrap;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: fit-content;
-}
-@media (min-width: 768px) {
-    .login-side{
-        width: 400px;
-    }
-}
-@media (max-width: 768px) {
-    .login-side{
-        height: 600px;
-        width: 90vw;
-    }
-}
-.logo{
+    gap: 0.75rem;
+    font-size: 1.75rem;
     color: var(--var-c-hover-text);
-    cursor: pointer;
-    font-size: 30px;
+    margin-bottom: 1.5rem;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
 }
-.login-text{
-    display: flex;
-    margin: 12px;
-    color: var(--var-c-sub-text);
-    cursor: pointer;
-    border: none;
-}
-.login-text:hover{
+
+h2 {
     color: var(--var-c-text);
-    outline: none;
+    font-size: 1.25rem;
+    font-weight: 400;
 }
-.input-login{
-    height: 32px;
-    width: 240px;
+
+:deep(.el-input__wrapper) {
+    background: var(--var-c-bg-secondary) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease;
+}
+
+:deep(.el-input__inner) {
+    color: var(--var-c-text) !important;
+}
+
+:deep(.el-input:hover .el-input__wrapper) {
+    box-shadow: 0 0 0 2px var(--var-c-hover-text) !important;
+}
+
+.login-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    height: 48px;
     border-radius: 12px;
-    border: 0;
-    outline: none;
-    padding: 12px;
+    transition: all 0.3s ease;
 }
-.placeholder{
-    font-size: 12px;
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
-.login-username{
-    margin: 12px;
+
+.card-footer {
+    margin-top: 1.5rem;
+    text-align: center;
 }
-.login-btn{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 32px;
-    width: 220px;
-    height: 32px;
-    border-radius: 12px;
+
+.tip-text {
+    color: var(--var-c-sub-text);
+    font-size: 0.875rem;
     cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.tip-text:hover {
+    color: var(--var-c-hover-text);
+}
+
+.error-state {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(8px); }
+    75% { transform: translateX(-8px); }
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
 }
 </style>

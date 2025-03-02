@@ -29,6 +29,7 @@ export interface ArticleAggregates {
     category: Category
 }
 
+
 export type ArticlePage = ApiResponseData<Page<ArticleAggregates>>
 export type HotArticleResponse = ApiResponseData<ArticleBrief[]>
 export type ArticleResponse = ApiResponseData<ArticleAggregates>

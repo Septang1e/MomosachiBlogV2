@@ -140,4 +140,7 @@ function passwordTypeCheck() {
     border-radius: 12px;
     cursor: pointer;
 }
+.placeholder{
+    color: var(--var-c-text);
+}
 </style>

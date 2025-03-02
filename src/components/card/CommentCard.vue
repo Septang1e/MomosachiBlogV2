@@ -20,19 +20,20 @@ const commentForm = ref({
     content: ''
 })
 
-// 回复定位相关
+
 const commentRefs = ref<HTMLElement[]>([])
 const commentFormRef = ref<HTMLElement | null>(null)
 
 const fetchComments = async () => {
     try {
         loading.value = true
-        comments.value = [
+        comments.value.push([
             {
                 pid: '1',
                 content: '这篇文章写得真好！',
                 createTime: Date.now(),
                 user: {
+                    pid: 'aaa',
                     username: '用户A',
                     avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
                     website: 'aaaa',
@@ -40,7 +41,7 @@ const fetchComments = async () => {
                 },
                 likes: 5
             }
-        ]
+        ])
     } catch (e) {
         ElMessage.error('获取评论失败')
     } finally {
@@ -106,16 +107,15 @@ onMounted(fetchComments)
     <div class="comment-card">
         <h3 class="comment-title">评论（{{ comments.length }}）</h3>
 
-        <!-- 评论列表 -->
         <div class="comment-list" v-loading="loading">
             <div
                 v-for="(comment, index) in comments"
-                :key="comment.id"
+                :key="comment.pid"
                 class="comment-item"
                 :ref="el => commentRefs[index] = el as HTMLElement"
-                :data-comment-id="comment.id"
+                :data-comment-id="comment.pid"
             >
-                <ElAvatar :src="comment.user.avatar" size="default" />
+                <el-avatar :src="comment.user.avatar" size="default" />
                 <div class="comment-content">
                     <div class="comment-header">
                         <div class="user-info">
@@ -135,58 +135,58 @@ onMounted(fetchComments)
                         {{ comment.content }}
                     </p>
                     <div class="comment-actions">
-                        <ElButton text class="action-btn">
+                        <el-button text class="action-btn">
                             <i class="bx bx-like" /> {{ comment.likes || '' }}
-                        </ElButton>
-                        <ElButton
+                        </el-button>
+                        <el-button
                             text
                             :icon="ChatLineRound"
                             class="action-btn"
-                            @click="handleReply(comment.id, comment.user.username)"
+                            @click="handleReply(comment.pid, comment.user.username)"
                         >
                             回复
-                        </ElButton>
+                        </el-button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 评论输入 -->
+
         <div class="comment-form" ref="commentFormRef">
             <div class="form-header">
                 <h4 v-if="replyTo">回复评论</h4>
                 <h4 v-else>发表评论</h4>
-                <ElButton
+                <el-button
                     v-if="replyTo"
                     text
                     @click="replyTo = null"
                     class="cancel-reply"
                 >
                     取消回复
-                </ElButton>
+                </el-button>
             </div>
 
             <div class="input-group">
-                <ElInput
+                <el-input
                     v-model="commentForm.username"
                     placeholder="用户名 *"
                     class="form-input"
                     required
                 />
-                <ElInput
+                <el-input
                     v-model="commentForm.email"
                     placeholder="邮箱 *"
                     class="form-input"
                     required
                 />
-                <ElInput
+                <el-input
                     v-model="commentForm.website"
                     placeholder="网站（可选）"
                     class="form-input"
                 />
             </div>
 
-            <ElInput
+            <el-input
                 v-model="commentForm.content"
                 type="textarea"
                 :rows="3"
@@ -196,13 +196,13 @@ onMounted(fetchComments)
             />
 
             <div class="form-actions">
-                <ElButton
+                <el-button
                     type="primary"
                     @click="submitComment"
                     :disabled="!commentForm.content.trim() || !commentForm.username || !commentForm.email"
                 >
                     发布评论
-                </ElButton>
+                </el-button>
             </div>
         </div>
     </div>
@@ -313,7 +313,7 @@ onMounted(fetchComments)
 }
 
 .comment-form {
-    border-top: 2px solid var(--var-card-color-border);
+
     padding-top: 1.5rem;
     margin-top: 2rem;
 }
@@ -349,8 +349,6 @@ onMounted(fetchComments)
 .comment-input {
     width: 100%;
     border-radius: 8px;
-    border: 1px solid var(--var-card-color-border);
-    padding: 0.75rem;
     background: var(--var-c-bg-secondary);
     color: var(--var-c-text);
     transition: border-color 0.2s;

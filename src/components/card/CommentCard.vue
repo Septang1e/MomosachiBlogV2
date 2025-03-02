@@ -12,7 +12,7 @@ const props = defineProps<{
 const comments = ref<Comment[]>([])
 const newComment = ref('')
 const loading = ref(false)
-const replyTo = ref<string | null>(null)
+const replyTo = ref<string>('')
 const commentForm = ref({
     username: '',
     email: '',
@@ -27,21 +27,27 @@ const commentFormRef = ref<HTMLElement | null>(null)
 const fetchComments = async () => {
     try {
         loading.value = true
-        comments.value.push([
+        comments.value.length = 0
+        comments.value.push(
             {
                 pid: '1',
-                content: '这篇文章写得真好！',
+                content: 'this is a test comment！',
                 createTime: Date.now(),
+                updateTime: Date.now(),
                 user: {
                     pid: 'aaa',
                     username: '用户A',
-                    avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+                    avatar: '',
                     website: 'aaaa',
                     email: ''
                 },
-                likes: 5
+                likes: 5,
+                parentId: '',
+                replies: [],
+                status: 0,
+                replyTo: '1'
             }
-        ])
+        )
     } catch (e) {
         ElMessage.error('获取评论失败')
     } finally {
@@ -58,24 +64,8 @@ const submitComment = async () => {
     }
 
     try {
-        // 新增表单数据
-        comments.value.unshift({
-            id: Date.now().toString(),
-            content: commentForm.value.content,
-            createTime: Date.now(),
-            user: {
-                username: commentForm.value.username,
-                email: commentForm.value.email,
-                website: commentForm.value.website,
-                avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
-            },
-            replyTo: replyTo.value,
-            likes: 0
-        })
+        // 提交逻辑
 
-        // 重置表单
-        commentForm.value = { username: '', email: '', website: '', content: '' }
-        replyTo.value = null
         ElMessage.success('评论成功')
     } catch (e) {
         ElMessage.error('评论失败')
@@ -159,7 +149,7 @@ onMounted(fetchComments)
                 <el-button
                     v-if="replyTo"
                     text
-                    @click="replyTo = null"
+                    @click="replyTo = ''"
                     class="cancel-reply"
                 >
                     取消回复

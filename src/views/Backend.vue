@@ -10,9 +10,6 @@
 
 <style scoped>
 .backend-wrap{
-    min-height: var(--var-screen-height);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: var(--var-screen-height);
 }
 </style>

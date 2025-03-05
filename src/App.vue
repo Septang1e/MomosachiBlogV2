@@ -61,6 +61,10 @@ onUnmounted(()=>{
     removeEventListener('resize', handleResize)
 })
 
+function handleHeaderVisibility() {
+    return "admin".match(<string>route.name)
+}
+
 // testing
 const colorSet = generateThemeColorSet("#FFC0CB")
 

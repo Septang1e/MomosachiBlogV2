@@ -85,7 +85,6 @@ const handleCreatePost = () => {
 .dashboard-container {
     padding: 20px;
     min-height: var(--var-screen-height);
-    background-color: var(--var-c-bg-main);
     backdrop-filter: blur(10px);
     border-radius: var(--var-card-border-radius);
     margin: 20px;

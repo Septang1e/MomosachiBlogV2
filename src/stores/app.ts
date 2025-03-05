@@ -6,8 +6,8 @@ import {reactive, ref} from "vue";
     You can automatically change this by using wakatimeAPI -> _doc(https://wakatime.com/developers)
     Or just simply dump the data at Settings->Account->Export
  */
-import WakatimeLastWeekStats from '@/resources/wakatime_stats_last_week.json'
-import WakatimeLastMonthStats from "@/resources/wakatime_stats_last_month.json"
+import WakatimeLastWeekStats from '@/resources/wakatime_stats_last_7_days.json'
+import WakatimeLastMonthStats from "@/resources/wakatime_stats_last_30_days.json"
 import WakatimeTotalTimeStats from "@/resources/wakatime_stats_total_time.json"
 
 export const useAppStore = defineStore('app', ()=>{

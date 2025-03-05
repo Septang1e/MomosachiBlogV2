@@ -54,15 +54,15 @@ const router = createRouter({
             component: Archive
         },
         {
+            path: '/backend/login',
+            name: 'admin_login',
+            component: Login
+        },
+        {
             path: '/backend',
             name: 'backend',
             component: Backend,
             children: [
-                {
-                    path: '/backend/login',
-                    name: 'admin_login',
-                    component: Login
-                },
                 {
                     path: '/backend/dashboard',
                     name: 'admin_dashboard',

@@ -2,7 +2,7 @@
 import {RouterView, useRoute} from 'vue-router'
 import Header from "@/components/Header.vue";
 import Copyright from "@/components/copyright/Copyright.vue";
-import {onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {useAppStore} from "@/stores";
 import ToolBar from "@/components/sidebar/ToolBar.vue";
 import {generateThemeColorSet} from "@/utils/theme-utils";
@@ -60,9 +60,9 @@ onMounted(()=>{
 onUnmounted(()=>{
     removeEventListener('resize', handleResize)
 })
-
+const isBackendPage = computed(()=>handleHeaderVisibility())
 function handleHeaderVisibility() {
-    return "admin".match(<string>route.name)
+    return /admin|backend/.test(String(route.name));
 }
 
 // testing
@@ -71,12 +71,12 @@ const colorSet = generateThemeColorSet("#FFC0CB")
 </script>
 
 <template>
-    <div class="header">
+    <div class="header" v-if="!isBackendPage">
         <Header/>
     </div>
     <RouterView/>
     <ToolBar/>
-    <div class="copyright">
+    <div class="copyright" v-if="!isBackendPage">
         <Copyright/>
     </div>
 </template>

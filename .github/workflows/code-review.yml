@@ -1,0 +1,155 @@
+name: Run CodeReview
+
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 2
+
+            - name: Set up JDK 17
+              uses: actions/setup-java@v2
+              with:
+                  distribution: 'temurin'
+                  java-version: '17'
+            
+            - name: Download Remote Jar
+              run: |
+                    wget --header "Authorization: Bearer ${{secrets.GH_TOKEN}}" \
+                    --header "Accept: application/octet-stream" \
+                    --header "User-Agent: GitHub-Actions" \
+                    -O "./deepseek-code-review-sdk-1.0.jar" \
+                    "https://api.github.com/repos/Septang1e/DeepseekCodeReview/releases/assets/236097536"
+
+            # 事件类型
+            - name: Get GitHub event type
+              run: echo "GITHUB_EVENT_TYPE=${GITHUB_EVENT_NAME}" >> $GITHUB_ENV
+
+            # 获取分支名
+            - name: Get branch name
+              run: |
+                  if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+                    echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+                  elif [[ "${GITHUB_REF}" == refs/pull/* ]]; then
+                    echo "BRANCH_NAME=PR-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+                  fi
+
+            # 获取提交哈希
+            - name: Get commit hash
+              run: echo "COMMIT_HASH=${{ github.sha }}" >> $GITHUB_ENV
+
+            # 获取 Pull Request Base 和 Head Commit（仅在 PR 触发时）
+            - name: Get PR base and head commits
+              if: github.event_name == 'pull_request'
+              run: |
+                  echo "PR_BASE_SHA=${{ github.event.pull_request.base.sha }}" >> $GITHUB_ENV
+                  echo "PR_HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+
+            - name: Get PR number
+              if: github.event_name == 'pull_request'
+              run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
+
+            # 获取提交作者
+            - name: Get commit author
+              run: echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an <%ae>')" >> $GITHUB_ENV
+
+            # 获取提交信息
+            - name: Get commit message
+              run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=format:'%s')" >> $GITHUB_ENV
+
+            - name: Get repository name
+              id: repo-name
+              run: echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
+            - name: Get repository owner
+              id: repo-owner
+              run: echo "REPO_OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+
+            # 打印日志信息
+            - name: Print collected information
+              run: |
+                  echo "================ GitHub Actions 环境信息 ================"
+                  echo "事件类型: $GITHUB_EVENT_TYPE"
+                  echo "仓库: $REPO_OWNER/$REPO_NAME"
+                  echo "当前分支: $BRANCH_NAME"
+                  echo "提交哈希: $COMMIT_HASH"
+                  echo "提交作者: $COMMIT_AUTHOR"
+                  echo "提交信息: $COMMIT_MESSAGE"
+
+                  if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+                      echo "PR 触发: 是"
+                      echo "PR 编号: $PR_NUMBER"
+                      echo "PR Base Commit: $PR_BASE_SHA"
+                      echo "PR Head Commit: $PR_HEAD_SHA"
+                  else
+                      echo "PR 触发: 否"
+                  fi
+
+                  echo "========================================================="
+
+            - name: Store collected information in ENV
+              run: |
+                  LOG_CONTENT="### 📝 GitHub Actions 环境信息\n"
+                  LOG_CONTENT+="\n- **事件类型:** \`$GITHUB_EVENT_TYPE\`"
+                  LOG_CONTENT+="\n- **仓库:** \`$REPO_OWNER/$REPO_NAME\`"
+                  LOG_CONTENT+="\n- **当前分支:** \`$BRANCH_NAME\`"
+                  LOG_CONTENT+="\n- **提交哈希:** \`$COMMIT_HASH\`"
+                  LOG_CONTENT+="\n- **提交作者:** \`$COMMIT_AUTHOR\`"
+                  LOG_CONTENT+="\n- **提交信息:** $COMMIT_MESSAGE"
+
+                  if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+                      LOG_CONTENT+="\n- **PR 触发:** ✅ 是"
+                      LOG_CONTENT+="\n- **PR 编号:** \`$PR_NUMBER\`"
+                      LOG_CONTENT+="\n- **PR Base Commit:** \`$PR_BASE_SHA\`"
+                      LOG_CONTENT+="\n- **PR Head Commit:** \`$PR_HEAD_SHA\`"
+                  else
+                      LOG_CONTENT+="\n- **PR 触发:** ❌ 否"
+                  fi
+
+                  echo "LOG_CONTENT<<EOF" >> $GITHUB_ENV
+                  echo -e "$LOG_CONTENT" >> $GITHUB_ENV
+                  echo "EOF" >> $GITHUB_ENV
+
+
+            # 运行代码审查
+            -   name: Run code Review
+                run: java -jar ./deepseek-code-review-sdk-1.0.jar
+                env:
+                    # ServerChan
+                    MCR_SERVER_CHAN_ENABLED: false
+                    MCR_SERVER_CHAN_SEND_KEY: ${{ secrets.SERVER_CHAN_SEND_KEY }}
+                    # Model
+                    # MCR_MODEL_NAME: "" # enums: deepseek-reasoner/deepseek-chat
+                    # MCR_MODEL_HOST: ""
+                    MCR_MODEL_SECRET: ${{ secrets.MODEL_API_KEY }}
+                    # EMAIL
+                    MCR_EMAIL_ENABLED: true
+                    MCR_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+                    MCR_EMAIL_PORT: 465
+                    MCR_EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+                    MCR_EMAIL_RECEIVERS: ${{ secrets.EMAIL_RECEIVERS }}
+                    MCR_EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+                    MCR_EMAIL_PROTOCOL: smtp
+                    # GitHub
+                    GH_TOKEN: ${{ secrets.GH_TOKEN }} # GitHub.GH_TOKEN
+                    # BRANCH_NAME: ${{ github.ref_name }} # GitHub.BRANCH_NAME
+                    # EVENT_TYPE: ${{ github.event_name }} # GitHub.EVENT_TYPE
+                    # PR_BASE_SHA: ${{ github.event.pull_request.base.sha }} # GitHub.PR_BASE_SHA
+                    # PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }} # GitHub.PR_HEAD_SHA
+                    # COMMIT_AUTHOR: ${{ github.actor }} # GitHub.COMMIT_AUTHOR
+                    # COMMIT_MESSAGE: ${{ github.event.head_commit.message }} # GitHub.COMMIT_MESSAGE
+                    # COMMIT_HASH: ${{ github.sha }} # GitHub.COMMIT_HASH
+                    # PR_NUMBER: ${{ github.event.pull_request.number }} # GitHub.PR_NUMBER
+                    REPO_NAME: ${{ github.repository }} # GitHub.REPO_NAME
+                    REPO_OWNER: ${{ github.repository_owner }} # GitHub.REPO_OWNER

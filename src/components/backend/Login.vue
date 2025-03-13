@@ -97,8 +97,8 @@ async function handleLogin() {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 50px - 75px);
-    background: linear-gradient(135deg, var(--var-c-bg-main) 0%, var(--var-c-bg-secondary) 100%);
+    height: 100vh;
+
     width: 100vw;
 }
 

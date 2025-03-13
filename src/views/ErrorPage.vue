@@ -2,6 +2,7 @@
 import {useAppStore} from "@/stores";
 import {useRouter} from "vue-router";
 import {ElButton} from 'element-plus'
+import {HomeFilled} from "@element-plus/icons-vue";
 
 const appStore = useAppStore()
 const router = useRouter()

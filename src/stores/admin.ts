@@ -6,6 +6,8 @@ export const useAdminStore = defineStore('admin', ()=>{
         article_count : 0,
         tag_count: 0,
         category_count : 0,
+        visit_count: 0,
+        comment_count: 0,
         admin_name : 'Momosachi',
         startDate : '2024-6-6 07:32',
         // name -- url

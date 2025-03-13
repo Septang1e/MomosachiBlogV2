@@ -6,7 +6,7 @@ import {getDateTime} from "@/utils/time-utils";
 import {cancelThumbUp, queryArticle, queryArticlePage, thumbUp} from "@/api/article";
 
 import type {Article, ArticleAggregates} from "@/api/article/types/article";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import MarkdownRenderer from "@/components/sub/MarkdownRenderer.vue";
 import HotArticle from "@/components/sidebar/HotArticle.vue";
 const tag_box_items = reactive([
@@ -16,6 +16,7 @@ const tag_box_items = reactive([
 
 const route = useRoute()
 const appStore = useAppStore()
+const router = useRouter()
 
 const side_bar_visibility = ref(true)
 const content_min_height = ref("min-height: max(calc(100vh - min(75px, 15vh)), 300px);")
@@ -43,9 +44,9 @@ const articleData = ref<ArticleAggregates>({
     },
 })
 const likeState = ref(false)
+const articlePid = ref("")
 
 watch(()=>route.fullPath, queryArticleData)
-
 function queryArticleData() {
     console.log(route.params['id'])
     queryArticle(<string>route.params['id']).then(res => {
@@ -53,6 +54,8 @@ function queryArticleData() {
         md_state.text = res.data.article.content
         likeState.value = getCurrentLikeState(articleData.value.article.pid)
         appStore.setArticlePid(articleData.value.article.pid)
+    }).catch(()=>{
+        router.push("/error")
     })
 }
 
@@ -75,7 +78,7 @@ import {useAppStore} from "@/stores";
 import {getCurrentLikeState, setLikeState} from "@/utils/local-storage";
 import {ArticleLikeState, ResponseCode} from "@/constant/app-key";
 import {ElMessage, ElMessageBox} from "element-plus";
-import CommentCard from "@/components/card/CommentCard.vue";
+import CommentCard from "@/components/card/comment/CommentCard.vue";
 
 const md_state = reactive({
     text: articleData.value.article.content,
@@ -227,7 +230,10 @@ onUnmounted(()=>{
                 </div>
             </div>
             <!-- 其余信息 -->
-            <CommentCard :article-pid="articleData.article.pid" />
+            <CommentCard
+                :key="route.fullPath"
+                :article-pid="<string>route.params['id']"
+            />
         </div>
         <div class="side-bar" v-if="side_bar_visibility" :style="`min-height: ${cardSetHeight}px`">
             <div class="side-bar-card-set" :style="sideBarClass">
@@ -404,4 +410,6 @@ a{
     justify-content: center;
     text-shadow: rgba(77, 77, 77) 1px 1px;
 }
+
+
 </style>

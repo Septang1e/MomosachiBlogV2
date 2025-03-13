@@ -1,0 +1,81 @@
+/* admin-theme.css */
+:root {
+    /* 管理员主题的基础变量 */
+    --admin-primary-blue: #1DA1F2;
+    --admin-blue-dark: #0C7ABF;
+    --admin-blue-light: #6DC0FF;
+    --admin-indigo: #5A54F9;
+    --admin-green: #17BF63;
+    --admin-yellow: #FFAD1F;
+    --admin-red: #E0245E;
+    --admin-gradient-start: #1DA1F2;
+    --admin-gradient-end: #5A54F9;
+}
+
+/* 管理后台浅色主题 */
+:root .light {
+    /* 背景和文本颜色 */
+    --admin-text: #0F1419;
+    --admin-bg-color: transparent;
+    --admin-bg-panel: rgba(255, 255, 255, 0.85);
+    --admin-bg-secondary: rgba(245, 248, 250, 0.9);
+    --admin-sub-text: #536471;
+
+    /* 卡片和边框 */
+    --admin-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    --admin-border-color: rgba(0, 0, 0, 0.1);
+    --admin-divider: rgba(0, 0, 0, 0.1);
+
+    /* 交互状态 */
+    --admin-hover-text: var(--admin-primary-blue);
+    --admin-hover-bg: rgba(29, 161, 242, 0.1);
+
+    /* 按钮样式 */
+    --admin-button-bg: var(--admin-primary-blue);
+    --admin-button-text: white;
+
+    /* 标签和指示器 */
+    --admin-tag-bg: rgba(29, 161, 242, 0.1);
+    --admin-tag-text: var(--admin-primary-blue);
+    --admin-notification: var(--admin-red);
+
+    /* 特殊元素 */
+    --admin-sidebar-active: linear-gradient(135deg, var(--admin-gradient-start), var(--admin-gradient-end));
+    --admin-success: var(--admin-green);
+    --admin-warning: var(--admin-yellow);
+    --admin-danger: var(--admin-red);
+}
+
+/* 管理后台深色主题 */
+:root .dark {
+    /* 背景和文本颜色 */
+    --admin-text: #E7E9EA;
+    --admin-bg-color: transparent;
+    --admin-bg-panel: rgba(21, 32, 43, 0.85);
+    --admin-bg-secondary: rgba(25, 39, 52, 0.9);
+    --admin-sub-text: #8899A6;
+
+    /* 卡片和边框 */
+    --admin-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    --admin-border-color: rgba(255, 255, 255, 0.1);
+    --admin-divider: rgba(255, 255, 255, 0.1);
+
+    /* 交互状态 */
+    --admin-hover-text: var(--admin-blue-light);
+    --admin-hover-bg: rgba(29, 161, 242, 0.2);
+
+    /* 按钮样式 */
+    --admin-button-bg: var(--admin-primary-blue);
+    --admin-button-text: white;
+
+    /* 标签和指示器 */
+    --admin-tag-bg: rgba(29, 161, 242, 0.2);
+    --admin-tag-text: var(--admin-blue-light);
+    --admin-notification: var(--admin-red);
+
+    /* 特殊元素 */
+    --admin-sidebar-active: linear-gradient(135deg, var(--admin-gradient-start), var(--admin-gradient-end));
+    --admin-success: var(--admin-green);
+    --admin-warning: var(--admin-yellow);
+    --admin-danger: var(--admin-red);
+}

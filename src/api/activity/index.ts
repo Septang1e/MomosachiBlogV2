@@ -1,6 +1,5 @@
 import {request} from "@/utils/request";
 import type {
-    ActivityBrief,
     ActivityBriefRequestData,
     ActivityData,
     ActivityPageData

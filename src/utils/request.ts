@@ -1,4 +1,4 @@
-import {ElMessage} from "element-plus";
+import {ElMessage, ElNotification} from "element-plus";
 
 
 import type {AxiosInstance, AxiosRequestConfig} from "axios"
@@ -30,13 +30,19 @@ function createService() : AxiosInstance{
                 ElMessage.error(  apiData.data === null ? "接口错误" : apiData)
                 return Promise.reject(new Error("接口错误"))
             }
-            // switch (code){
-            //     case '0000':
-            //         return apiData
-            //     default:
-            //         return Promise.reject(new Error("Error"))
-            // }
-            return apiData
+            switch (code){
+                case '0000':
+                    return apiData
+                case '0003':
+                    return apiData
+                default:
+                    ElNotification({
+                        title: 'Error',
+                        message: apiData.msg,
+                        type: "error"
+                    })
+                    return Promise.reject(new Error(apiData.message))
+            }
         },
         (error)=>{
             const status = get(error, "response.status")

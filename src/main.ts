@@ -1,7 +1,11 @@
 import './assets/main.css'
+import '@/assets/backend-theme.css'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import "boxicons/css/boxicons.css"
+
+
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

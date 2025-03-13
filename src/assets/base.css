@@ -1,112 +1,87 @@
-/* color palette from <https://github.com/vuejs/theme> */
-/*:root {*/
-/*  --vt-c-white: #ffffff;*/
-/*  --vt-c-white-soft: #f8f8f8;*/
-/*  --vt-c-white-mute: #f2f2f2;*/
-
-/*  --vt-c-black: #181818;*/
-/*  --vt-c-black-soft: #222222;*/
-/*  --vt-c-black-mute: #282828;*/
-
-/*  --vt-c-indigo: #2c3e50;*/
-
-/*  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);*/
-/*  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);*/
-/*  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);*/
-/*  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);*/
-
-/*  --vt-c-text-light-1: var(--vt-c-indigo);*/
-/*  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);*/
-/*  --vt-c-text-dark-1: var(--vt-c-white);*/
-/*  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);*/
-/*}*/
-
-/*!* semantic color variables for this project *!*/
-/*:root {*/
-/*  --color-background: var(--vt-c-white);*/
-/*  --color-background-soft: var(--vt-c-white-soft);*/
-/*  --color-background-mute: var(--vt-c-white-mute);*/
-
-/*  --color-border: var(--vt-c-divider-light-2);*/
-/*  --color-border-hover: var(--vt-c-divider-light-1);*/
-
-/*  --color-heading: var(--vt-c-text-light-1);*/
-/*  --color-text: var(--vt-c-text-light-1);*/
-
-/*  --section-gap: 160px;*/
-/*}*/
-
-/*@media (prefers-color-scheme: dark) {*/
-/*  :root {*/
-/*    --color-background: var(--vt-c-black);*/
-/*    --color-background-soft: var(--vt-c-black-soft);*/
-/*    --color-background-mute: var(--vt-c-black-mute);*/
-
-/*    --color-border: var(--vt-c-divider-dark-2);*/
-/*    --color-border-hover: var(--vt-c-divider-dark-1);*/
-
-/*    --color-heading: var(--vt-c-text-dark-1);*/
-/*    --color-text: var(--vt-c-text-dark-2);*/
-/*  }*/
-/*}*/
-
-:root{
-    /* WHITE BEGIN */
-    --var-c-white-text: rgba(51, 51, 51);
-    --var-c-white-text-cover: white;
-    --var-c-white-bg-c: white;
-    --var-c-white-bg-main: rgba(255,255,255,0.9);
-    --var-c-white-bg-secondary: rgba(255,255,255,0.3);
-    --var-c-white-sub-text: rgba(99, 99, 99);
-    --var-c-white-hover-text: skyblue;
-    --var-c-white-hover-bg:  rgba(204, 235, 255, 0.7);
-    --var-c-white-tag-bg: rgba(204, 235, 255, 1);
-    --var-c-white-tag-text: skyblue;
-    --var-card-white-box-shadow: rgba(55, 55, 55) 0 10px 20px;
-    --var-card-color-white-border: rgba(244,155,155);
-    --var-button-white-bg: rgba(64,158,255);
-    --var-button-white-c: white;
-    --var-button-isliked-bg: lightpink;
-    /* --var-button-white-box-shadow: rgba(155, 155, 155) 0 0 25px; */
-    /* NORMAL BEGIN */
+/* ================= 基础全局变量 ================= */
+:root {
+    /* 尺寸 & 布局 */
     --var-c-card-title-font-size: 22px;
     --var-c-card-item-font-size: 16px;
     --var-card-border-radius: 8px;
-    --seconds-progress: 1;
     --var-screen-height: calc(100vh - 125px);
-    /* DARK BEGIN*/
-    --var-c-dark-text: rgba(244,244,244);
+    --seconds-progress: 1;
+}
+
+/* ================= 明亮主题变量 ================= */
+:root {
+    /* 文字颜色 */
+    --var-c-white-text: rgba(51, 51, 51);
+    --var-c-white-text-cover: white;
+    --var-c-white-sub-text: rgba(99, 99, 99);
+    --var-c-white-hover-text: skyblue;
+
+    /* 背景颜色 */
+    --var-c-white-bg-c: white;
+    --var-c-white-bg-main: rgba(255, 255, 255, 0.9);
+    --var-c-white-bg-solid: #F8F9FA;
+    --var-c-white-bg-secondary: rgba(255, 255, 255, 0.2);
+    --var-c-white-hover-bg: rgba(204, 235, 255, 0.7);
+
+    /* 组件样式 */
+    --var-c-white-tag-bg: rgba(204, 235, 255, 1);
+    --var-c-white-tag-text: skyblue;
+    --var-card-white-box-shadow: rgba(55, 55, 55) 0 10px 20px;
+    --var-card-color-white-border: rgba(244, 155, 155);
+    --var-button-white-bg: rgba(64, 158, 255);
+    --var-button-white-c: white;
+    --var-button-isliked-bg: lightpink;
+}
+
+/* ================= 暗黑主题变量 ================= */
+:root {
+    /* 文字颜色 */
+    --var-c-dark-text: rgba(244, 244, 244);
     --var-c-dark-text-cover: white;
-    --var-c-dark-hover-text: orange;
-    --var-c-dark-hover-bg: rgba(255, 183, 77, 0.5);
-    --var-c-dark-bg-c: darkgrey;
-    --var-c-dark-bg-main: rgba(29,29,29, 0.9);
-    --var-c-dark-bg-secondary: rgba(22,22,22,0.3);
     --var-c-dark-sub-text: rgba(199, 199, 199);
+    --var-c-dark-hover-text: orange;
+
+    /* 背景颜色 */
+    --var-c-dark-bg-solid: #0F0F0F;
+    --var-c-dark-bg-c: darkgrey;
+    --var-c-dark-bg-main: rgba(29, 29, 29, 0.9);
+    --var-c-dark-bg-secondary: rgba(22, 22, 22, 0.3);
+    --var-c-dark-hover-bg: rgba(255, 183, 77, 0.5);
+
+    /* 组件样式 */
     --var-c-dark-tag-bg: rgba(255, 183, 77, 0.5);
     --var-c-dark-tag-text: oklch(.0 .14 365);
-    --var-card-dark-box-shadow: rgba(14,14,14) 0 10px 20px;
+    --var-card-dark-box-shadow: rgba(14, 14, 14) 0 10px 20px;
     --var-card-color-dark-border: #2C2C2C;
     --var-button-dark-bg: var(--var-c-dark-bg-secondary);
     --var-button-dark-c: var(--var-c-dark-text);
-    /* Customize BEGIN */
-    --var-c-customize-text: rgba(255, 255, 255, 0.85); /* 亮白色文本，增强可读性 */
-    --var-c-customize-text-cover: rgba(255, 255, 255, 0.7); /* 半透明白色，用于封面文字 */
-    --var-c-customize-bg-c: rgba(25, 25, 25, 1); /* 深灰色背景，接近黑色 */
-    --var-c-customize-bg-main: rgba(40, 10, 45, 1); /* 深紫红色背景，主色调 */
-    --var-c-customize-bg-secondary: rgba(55, 15, 55, 0.7); /* 深紫红色次背景，增加层次感 */
-    --var-c-customize-sub-text: rgba(200, 200, 200, 0.7); /* 灰色文字，用于子标题或描述 */
-    --var-c-customize-hover-text: rgba(255, 100, 120, 1); /* 浅亮红色，用于悬停时的文本 */
-    --var-card-customize-box-shadow: rgba(0, 0, 0, 0.7) 0 10px 20px; /* 深色阴影，增加立体感 */
-    --var-card-color-customize-border: rgba(90, 30, 75, 0.6); /* 暗红紫色边框，柔和的视觉效果 */
-    --var-button-customize-bg: rgba(75, 14, 55, 1); /* 深紫红色按钮背景，符合主题色 */
-    --var-button-customize-c: rgba(255, 255, 255, 0.9); /* 按钮文本颜色，白色 */
-
-
 }
-:root .light{
+
+/* ================= 自定义主题变量 ================= */
+:root {
+    /* 文字颜色 */
+    --var-c-customize-text: rgba(255, 255, 255, 0.85);
+    --var-c-customize-text-cover: rgba(255, 255, 255, 0.7);
+    --var-c-customize-sub-text: rgba(200, 200, 200, 0.7);
+    --var-c-customize-hover-text: rgba(255, 100, 120, 1);
+
+    /* 背景颜色 */
+    --var-c-customize-bg-c: rgba(25, 25, 25, 1);
+    --var-c-customize-bg-main: rgba(40, 10, 45, 1);
+    --var-c-customize-bg-secondary: rgba(55, 15, 55, 0.7);
+
+    /* 组件样式 */
+    --var-card-customize-box-shadow: rgba(0, 0, 0, 0.7) 0 10px 20px;
+    --var-card-color-customize-border: rgba(90, 30, 75, 0.6);
+    --var-button-customize-bg: rgba(75, 14, 55, 1);
+    --var-button-customize-c: rgba(255, 255, 255, 0.9);
+}
+
+/* ================= 主题映射配置 ================= */
+:root .light {
     --var-c-text: var(--var-c-white-text);
     --var-c-bg-c: var(--var-c-white-bg-c);
+    --var-c-bg-solid: var(--var-c-white-bg-solid);
     --var-c-bg-main: var(--var-c-white-bg-main);
     --var-c-bg-secondary: var(--var-c-white-bg-secondary);
     --var-c-sub-text: var(--var-c-white-sub-text);
@@ -119,11 +94,16 @@
     --var-c-hover-bg: var(--var-c-white-hover-bg);
     --var-c-tag-bg: var(--var-c-white-tag-bg);
     --var-c-tag-text: var(--var-c-white-tag-text);
+    --var-drawer-bg: rgb(242, 246, 252);
+    --var-drawer-box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+
 }
-:root .dark{
+
+:root .dark {
     --var-c-text: var(--var-c-dark-text);
     --var-c-bg-c: var(--var-c-dark-bg-c);
     --var-c-bg-main: var(--var-c-dark-bg-main);
+    --var-c-bg-solid: var(--var-c-dark-bg-solid);
     --var-c-bg-secondary: var(--var-c-dark-bg-secondary);
     --var-c-sub-text: var(--var-c-dark-sub-text);
     --var-card-box-shadow: var(--var-card-dark-box-shadow);
@@ -135,8 +115,11 @@
     --var-c-hover-bg: var(--var-c-dark-hover-bg);
     --var-c-tag-bg: var(--var-c-dark-tag-bg);
     --var-c-tag-text: var(--var-c-dark-tag-text);
+    --var-drawer-bg: #0F0F0F;
+    --var-drawer-box-shadow: 0 0 8px rgba(200, 200, 200, 0.1);
 }
-:root .customize{
+
+:root .customize {
     --var-c-text: var(--var-c-customize-text);
     --var-c-bg-c: var(--var-c-customize-bg-c);
     --var-c-bg-main: var(--var-c-customize-bg-main);
@@ -150,6 +133,7 @@
     --var-button-c: var(--var-button-customize-c);
 }
 
+/* ================= 基础样式重置 ================= */
 *,
 *::before,
 *::after {
@@ -160,23 +144,9 @@
 
 body {
     min-height: 100vh;
-    transition:
-            color 0.5s,
-            background-color 0.5s;
+    transition: color 0.5s, background-color 0.5s;
     line-height: 1.6;
-    font-family:
-            Inter,
-            -apple-system,
-            BlinkMacSystemFont,
-            'Segoe UI',
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            'Fira Sans',
-            'Droid Sans',
-            'Helvetica Neue',
-            sans-serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 15px;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;

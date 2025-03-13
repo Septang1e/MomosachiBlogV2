@@ -7,6 +7,7 @@ import Login from "@/components/backend/Login.vue";
 import Backend from "@/views/Backend.vue";
 import NotFound from "@/views/ErrorPage.vue";
 import DashBoard from "@/components/backend/DashBoard.vue";
+import ArticleBackend from "@/components/backend/ArticlePostPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,19 +55,29 @@ const router = createRouter({
             component: Archive
         },
         {
-            path: '/backend/login',
+            path: '/admin/login',
             name: 'admin_login',
             component: Login
         },
         {
-            path: '/backend',
+            path: '/admin',
             name: 'backend',
             component: Backend,
             children: [
                 {
-                    path: '/backend/dashboard',
+                    path: '/admin/dashboard',
                     name: 'admin_dashboard',
                     component: DashBoard
+                },
+                {
+                    path: '/admin',
+                    name: 'admin_dashboard_',
+                    component: DashBoard
+                },
+                {
+                    path: '/admin/posts',
+                    name: 'admin_article',
+                    component: ArticleBackend
                 }
             ]
         },

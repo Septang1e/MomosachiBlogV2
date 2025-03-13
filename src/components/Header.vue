@@ -1,17 +1,22 @@
 <script lang="ts" setup>
 import {onMounted, onUnmounted, reactive, ref, watch} from "vue";
-import {useAppStore} from "@/stores";
+import {useAdminStore, useAppStore} from "@/stores";
 import {useRoute} from "vue-router";
 import Search from "@/components/sub/Search.vue";
+import MdEditorCatalog from "@/components/sub/MdEditorCatalog.vue";
+import AdminAvatar from "@/assets/resource/avatar.jpg"
 const appStore = useAppStore()
 const route = useRoute()
 const tool_box_items = reactive([
     { name: '首页', uri: '/', icons: 'bx bxs-home', styles: '', route_name: 'home' },
     { name: '归档', uri: '/archive', icons: 'bx bxs-archive', styles: '', route_name: 'archive' },
+    { name: 'RAG知识库', uri: '/rag', icons: 'bx bxs-archive', styles: '', route_name: 'rag' },
 
 ])
 const header_style = ref("")
 const header_class = ref("")
+const menuDrawerRef = ref(false)
+const adminStore = useAdminStore()
 
 function handleHeaderVisibilityState() {
     const currentY = window.scrollY
@@ -25,6 +30,18 @@ function handlerHeaderHideState() {
         header_class.value = ""
     }
 }
+
+function toggleMenuClick() {
+    if(!appStore.sideBarVisible()) {
+        menuDrawerRef.value = !menuDrawerRef.value
+    }
+}
+function handleMenuDrawerVisible() {
+    if(menuDrawerRef.value) {
+        menuDrawerRef.value = !appStore.sideBarVisible() && appStore.headerVisible()
+    }
+}
+
 const currentRoute = ref<String>(<string>route.name)
 function match(s: string | undefined) {
 
@@ -41,26 +58,82 @@ function scrollEventListener() {
     handleHeaderVisibilityState()
     handlerHeaderHideState()
 }
+function resizeEventListener() {
+    handleMenuDrawerVisible()
+}
 
 onMounted(()=>{
     currentRoute.value = <string>route.name
     scrollEventListener()
     addEventListener("scroll", scrollEventListener)
+    addEventListener("resize", resizeEventListener)
 })
 onUnmounted(()=>{
     removeEventListener("scroll", scrollEventListener)
+    removeEventListener("resize", resizeEventListener)
 })
 
 </script>
 
 <template>
+
     <div :style="header_style" :class="header_class + ' header-box'">
         <el-icon
             v-if="!appStore.sideBarVisible()"
             class="bx bx-menu show-menu-btn"
             :size="25"
-            @click=""
+            @click="toggleMenuClick"
         />
+
+        <el-drawer
+            v-model="menuDrawerRef"
+            direction="ltr"
+            size="70%"
+            class="menu-drawer"
+            :lock-scroll="false"
+            :with-header="false"
+            append-to-body
+            destroy-on-close
+        >
+            <div class="menu-drawer-wrap">
+
+<!--                <div class="drawer-admin-info drawer-item">-->
+<!--                    <el-avatar-->
+<!--                        size="300"-->
+<!--                        class="admin-avatar"-->
+<!--                        :src="AdminAvatar"-->
+<!--                    />-->
+
+<!--                </div>-->
+
+                <div
+                    v-if="route.name === 'article'"
+                    class="drawer-catalog drawer-item"
+                >
+                    <MdEditorCatalog
+                        style="width: 100%; background-color: transparent !important;"
+                        editor-id="preview-only"/>
+                </div>
+
+
+                <div class="drawer-item drawer-navigation">
+                    <h2><el-icon><Menu /></el-icon> 导航</h2>
+                    <div class="drawer-nav-list">
+                        <router-link
+                            v-for="(item, index) in tool_box_items"
+                            :key="index"
+                            :to="item.uri"
+                            class="drawer-nav-item"
+                            :class="{ 'active': match(item.route_name) }"
+                        >
+                            <i :class="item.icons"></i>
+                            <span>{{ item.name }}</span>
+                        </router-link>
+                    </div>
+                </div>
+            </div>
+        </el-drawer>
+
         <div class="logo">
             <router-link to="/" class="logo-content">
 <!--                <el-icon size="100%" style="margin-right: 5px">-->
@@ -89,7 +162,6 @@ onUnmounted(()=>{
             v-if="!appStore.sideBarVisible()"
             class="bx bx-cog show-tool-kit-btn"
             :size="25"
-            @click=""
         />
     </div>
 </template>
@@ -121,10 +193,6 @@ onUnmounted(()=>{
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.logo{
-    /*text-shadow: rgba(255, 158, 206) 0 1px, rgba(2, 251, 209) 0 -1px;*/
-    /**text-shadow: rgba(255, 158, 206) 1px -1px, rgba(2, 251, 209) 2px -2px;*/
 }
 .logo-content{
     display: flex;
@@ -197,4 +265,86 @@ onUnmounted(()=>{
 .search-box{
     margin-left: 10px;
 }
+.drawer-catalog{
+    width: 100%;
+    position: relative;
+}
+
+.drawer-admin-info{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.admin-avatar{
+    width: 50px;
+    height: 50px;
+}
+
+.drawer-item{
+    margin-bottom: 30px;
+    box-shadow: var(--var-drawer-box-shadow);
+    background-color: var(--var-c-bg-main);
+    border-radius: 8px;
+}
+
+.drawer-navigation{
+    padding: 20px;
+}
+
+.drawer-navigation h2 {
+    display: flex;
+    align-items: center;
+    font-size: var(--var-c-card-title-font-size);
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: var(--var-c-text);
+}
+
+.drawer-navigation h2 .el-icon {
+    margin-right: 8px;
+}
+
+.drawer-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.drawer-nav-item {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    text-decoration: none;
+    padding: 12px 16px;
+    color: var(--var-c-text);
+    transition: all 0.3s ease;
+}
+
+.drawer-nav-item:hover {
+    background-color: var(--var-c-hover-bg);
+}
+
+.drawer-nav-item.active {
+    background-color: var(--var-c-hover-bg);
+    color: #409eff;
+}
+
+.drawer-nav-item i {
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.drawer-nav-item span {
+    font-size: 16px;
+}
+
+
+</style>
+
+<style>
+.el-drawer{
+    background-color: var(--var-c-bg-solid);
+}
+
 </style>

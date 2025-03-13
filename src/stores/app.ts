@@ -22,6 +22,7 @@ export const useAppStore = defineStore('app', ()=>{
     const articlePid = ref<undefined | string>(undefined)
     const tool_bar_visibility = ref(false)
     const menu_visibility = ref(false)
+    const replyTo = ref("")
 
         // Mobile Handler Start
     function handleDeviceState() {
@@ -89,12 +90,21 @@ export const useAppStore = defineStore('app', ()=>{
         return menu_visibility.value
     }
 
+    // Reply
+    function setReplyTo(reply: string) {
+        replyTo.value = reply
+    }
+
+    function getReplyTo() {
+        return replyTo.value
+    }
+
     return {
         handleDeviceState, isMobile,
         handleSideBarVisibility, sideBarVisible,
         getCurrentTheme, setTheme,
         handleHeaderVisibility, headerVisible,
         getCurrentArticlePid, setArticlePid, clearArticlePid,
-        getWakatimeStats
+        getWakatimeStats, setReplyTo, getReplyTo
     }
 })

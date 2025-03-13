@@ -98,7 +98,7 @@ onMounted(()=>{
     font-weight: bold;
     font-size: var(--var-c-card-title-font-size);
     cursor: pointer;
-    transition: color ease-in-out 0.3s;
+
 }
 .hot-article-wrap{
     color: var(--var-c-sub-text);

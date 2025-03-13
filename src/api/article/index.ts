@@ -1,6 +1,7 @@
 import type {PageConfig} from "@/api/page";
 import {request} from "@/utils/request";
 import type {
+    ArticleAggregates,
     ArticleLikeResponse,
     ArticlePage,
     ArticleResponse,
@@ -9,6 +10,7 @@ import type {
 } from "@/api/article/types/article";
 import {ref} from "vue";
 import {API_VERSION} from "@/constant/app-constant";
+import type {ApiResponseData} from "@/api/response";
 
 
 export function queryArticlePage(conf: PageConfig, tag: string | undefined, category: string | undefined, keyword: string | undefined) {
@@ -80,4 +82,15 @@ export function autocompleteArticleSearchKeyword(keyword: string) {
         url: `/api/${API_VERSION}/article/autocomplete/${keyword}`,
         method: 'post'
     })
+}
+export function createArticle(articleAggregates: ArticleAggregates) {
+    return request<ApiResponseData<string>>({
+        url: `/api/${API_VERSION}/article`,
+        method: 'post',
+        data: articleAggregates
+    })
+}
+
+export function queryArticleBackendPage() {
+
 }

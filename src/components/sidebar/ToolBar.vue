@@ -28,7 +28,10 @@ function toggleTheme() {
     const theme_now = ref(appStore.getCurrentTheme())
     document.body.classList.remove(theme_now.value)
     theme_now.value = theme_now.value === 'light' ? 'dark' : 'light';
+
     document.body.classList.add(theme_now.value)
+    // document.documentElement.setAttribute('class', theme_now.value)
+
     appStore.setTheme(theme_now.value)
     setTheme(theme_now.value)
     current_theme.value = theme_now.value

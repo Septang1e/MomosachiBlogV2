@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Header from "@/components/Header.vue";
 import PaginationCard from "@/components/pagination/PaginationCard.vue";
 import {computed, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import HotArticle from "@/components/sidebar/HotArticle.vue";
@@ -12,7 +11,6 @@ import {useRoute} from "vue-router";
 import type {ArticleAggregates} from "@/api/article/types/article";
 import {useAppStore} from "@/stores";
 import Cover from "@/components/Cover.vue";
-import markdownIt from "@/utils/markdown-it";
 
 function scrollToMainContent() {
     const content_wrap = document.querySelector('.cover')
@@ -66,9 +64,8 @@ function initPaginationConfig() {
         category.value = <string>route.params['id']
     }
     else if(route.name === 'search_result') {
-        keyword.value = <string>route.params['keyword']
+        keyword.value = <string>route.query['keyword']
     }
-    console.log(conf)
 }
 watch(()=>route.fullPath, ()=>{
     initPaginationConfig()

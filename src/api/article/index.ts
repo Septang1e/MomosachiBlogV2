@@ -4,6 +4,7 @@ import type {
     ArticleAggregates,
     ArticleLikeResponse,
     ArticlePage,
+    ArticlePageQueryDTO,
     ArticleResponse,
     ArticleSearchKeywordResponse,
     HotArticleResponse
@@ -85,12 +86,56 @@ export function autocompleteArticleSearchKeyword(keyword: string) {
 }
 export function createArticle(articleAggregates: ArticleAggregates) {
     return request<ApiResponseData<string>>({
-        url: `/api/${API_VERSION}/article`,
+        url: `/admin/api/${API_VERSION}/article/`,
         method: 'post',
         data: articleAggregates
     })
 }
 
-export function queryArticleBackendPage() {
+export function updateArticle(article: ArticleAggregates) {
+    article.article.createTime = ''
+    article.article.updateTime = ''
+    return request<ApiResponseData<string>>({
+        url: `/admin/api/${API_VERSION}/article/`,
+        method: "PUT",
+        data: article
+    })
+}
 
+export function deleteArticle(article: ArticleAggregates) {
+    article.article.createTime = ''
+    article.article.updateTime = ''
+    return request<ApiResponseData<string>>({
+        url: `/admin/api/${API_VERSION}/article/`,
+        method: 'DELETE',
+        data: article
+    })
+}
+
+export function queryArticleBackendPage(page_conf: PageConfig, query_dto : ArticlePageQueryDTO) {
+
+    const params = new URLSearchParams()
+
+    if (page_conf.strategy) {
+        params.append('strategy', page_conf.strategy);
+    }
+    if (page_conf.sort?.length) {
+        params.append('sort', page_conf.sort.join(',')); // 数组转逗号分隔
+    }
+
+    // 处理查询条件参数
+    if (query_dto.tag) {
+        params.append('tag', query_dto.tag);
+    }
+    if (query_dto.category) {
+        params.append('category', query_dto.category);
+    }
+    if (query_dto.keyword) {
+        params.append('keyword', query_dto.keyword);
+    }
+
+    return request<ArticlePage>({
+        url: `/admin/api/${API_VERSION}/article/pagination/${page_conf.current}/${page_conf.size}?${params}`,
+        method: 'GET'
+    })
 }

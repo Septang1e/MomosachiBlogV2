@@ -18,6 +18,12 @@ const header_class = ref("")
 const menuDrawerRef = ref(false)
 const adminStore = useAdminStore()
 
+const searchBoxDialogRef = ref(false)
+
+function toggleSearchBoxDialog() {
+  searchBoxDialogRef.value = !searchBoxDialogRef.value
+}
+
 function handleHeaderVisibilityState() {
     const currentY = window.scrollY
     header_style.value = "background-color: var(--var-c-bg-main);"
@@ -160,9 +166,22 @@ onUnmounted(()=>{
         </div>
         <el-icon
             v-if="!appStore.sideBarVisible()"
-            class="bx bx-cog show-tool-kit-btn"
+            class="bx bx-search show-tool-kit-btn"
+            @click="toggleSearchBoxDialog"
             :size="25"
         />
+
+      <el-dialog
+          v-model="searchBoxDialogRef"
+          width="78%"
+          class="search-box-dialog"
+          style="background-color: var(--var-c-bg-secondary); backdrop-filter: blur(5px)"
+      >
+          <div class="search-box-dialog-wrap">
+              <Search/>
+          </div>
+      </el-dialog>
+
     </div>
 </template>
 
@@ -322,12 +341,13 @@ onUnmounted(()=>{
 }
 
 .drawer-nav-item:hover {
-    background-color: var(--var-c-hover-bg);
+    color: var(--var-c-hover-text);
 }
 
 .drawer-nav-item.active {
-    background-color: var(--var-c-hover-bg);
-    color: #409eff;
+    color: var(--var-c-hover-text);
+    font-weight: bold;
+    text-shadow: var(--var-c-hover-text) 0 0 5px;
 }
 
 .drawer-nav-item i {
@@ -338,7 +358,11 @@ onUnmounted(()=>{
 .drawer-nav-item span {
     font-size: 16px;
 }
-
+.search-box-dialog-wrap{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 </style>
 

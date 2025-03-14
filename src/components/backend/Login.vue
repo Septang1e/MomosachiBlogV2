@@ -4,9 +4,13 @@ import {ElInput, ElButton, ElLoading} from 'element-plus'
 import CoverSideImg from "@/assets/bg/A.jpg"
 import {ref} from "vue";
 import {Lock, User} from "@element-plus/icons-vue";
+import type {LoginForm} from "@/api/user/types/user";
+import {applyForAuth} from "@/api/user";
+import {getToken, setToken} from "@/utils/local-storage";
+import router from "@/router";
 
 const appStore = useAppStore()
-const login_form = ref({
+const login_form = ref<LoginForm>({
     username: '',
     password: ''
 })
@@ -15,14 +19,17 @@ const isError = ref(false)
 
 async function handleLogin() {
     isLoading.value = true
-    try {
-        // TODO 登录请求、后端重构
 
-    } catch (e) {
+    applyForAuth(login_form.value).then((res)=>{
+        console.log(res)
+        setToken(`${res.data}`)
+        router.push("/admin/dashboard")
+    }).catch(()=>{
         isError.value = true
-    } finally {
+    }).finally(()=>{
         isLoading.value = false
-    }
+    })
+
 }
 </script>
 
@@ -78,6 +85,7 @@ async function handleLogin() {
                         type="primary"
                         size="large"
                         :loading="isLoading"
+                        @click="handleLogin"
                         class="login-btn"
                     >
                         {{ isLoading ? '登录中...' : '立即登录' }}

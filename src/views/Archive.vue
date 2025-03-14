@@ -18,7 +18,7 @@ const currentDate = ref("");
 
 const pageConf : PageConfig = reactive({
     current: 1,
-    size: 5,
+    size: 8,
     strategy: "",
     sort: [],
     total: 0,
@@ -30,12 +30,17 @@ const articleMessageMap : Map<String, String> = new Map([
     [ActivityType.UPDATE, "更新于"]
 ])
 
+const loading = ref(false)
+
 interface TimelineItem{
     date: string,
     activities: Activity[]
     visible: boolean
 }
 function queryActivityData() {
+
+    loading.value = true
+
     const day = <string>route.query['day']
     const year = <string>route.query['year']
 
@@ -48,10 +53,12 @@ function queryActivityData() {
             }
             const data = res.data
             for(let i in data) {
-                data[i].activityTime = format(data[i].activityTime, "yyyy-MM-dd hh:mm")
+                data[i].activityTime = format(data[i].activityTime, "yyyy-MM-dd HH:mm")
                 item.activities.push(data[i])
             }
             articleActionsData.value.push(item)
+        }).finally(()=>{
+            loading.value = false
         })
         return
     }
@@ -59,6 +66,7 @@ function queryActivityData() {
     queryArticleActivityPage(pageConf, year).then((res)=>{
         pageConf.total = res.data.total
         const records = res.data.records
+        hasMore.value = pageConf.current * pageConf.size < pageConf.total
         for(let i in records) {
             const activity = records[i]
             // 用于把某一天划分到一个Timeline里
@@ -80,6 +88,8 @@ function queryActivityData() {
             }
             articleActionsData.value[articleActionsData.value.length - 1].activities.push(activity)
         }
+    }).finally(()=>{
+        loading.value = false
     })
 }
 
@@ -93,12 +103,23 @@ watch(()=>route.fullPath, ()=> {
     queryActivityData()
 })
 
+const hasMore = ref(false)
+
+function scrollEventHandler() {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (!loading.value && hasMore.value && scrollTop + clientHeight >= scrollHeight - 10) {
+        pageConf.current++
+        queryActivityData()
+    }
+}
+
 onMounted(()=>{
     queryActivityData()
+    addEventListener('scroll', scrollEventHandler)
 })
 
 function verifyDateStr() {
-
+    removeEventListener('scroll', scrollEventHandler)
 }
 
 

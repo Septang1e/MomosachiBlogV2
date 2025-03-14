@@ -26,7 +26,6 @@ const handleSearchKeydown = (event : KeyboardEvent) =>{
     if(event.key === 'Enter' && delIconVisible.value) {
         onSearch()
     }
-    console.log(event)
 }
 const onSearch = () => {
     if(keyword.value.length === 0) return
@@ -42,6 +41,7 @@ const autocomplete = () => {
     })
 }
 watch(()=>keyword.value, ()=>{
+  if(keyword.value.length === 0) return
     autocomplete()
 })
 

@@ -4,6 +4,8 @@ import {getDateTime} from "@/utils/time-utils";
 import {jumpTo} from "@/utils/router-utils";
 import type {ArticleAggregates} from "@/api/article/types/article";
 import {ArticleState, PaginationStrategy} from "@/constant/app-key";
+import DefaultBg from "@/assets/bg/B.jpg"
+
 
 const props = defineProps<{
     article: ArticleAggregates
@@ -11,14 +13,22 @@ const props = defineProps<{
 }>()
 onMounted(()=>{
     props.article.tags.length = Math.min(props.article.tags.length, 2)
+    handleDynamicBackground()
 })
-
+const background = ref("")
+const handleDynamicBackground = () => {
+    if(props.article && props.article.article.cover && props.article.article.cover !== '') {
+        background.value = props.article.article.cover
+    }else{
+        background.value = DefaultBg
+    }
+}
 
 </script>
 
 <template>
     <router-link :to="`/article/${article.article.pid}`" class="pagination-card">
-        <div class="blur-background"></div>
+        <div class="blur-background" :style="`background: url(${background}) no-repeat; background-size: cover;`"></div>
         <div class="overhead"
              v-if="article.article.setTop === ArticleState.SET_TOP && strategy === PaginationStrategy.DEFAULT_STRATEGY"
         >顶置</div>
@@ -102,9 +112,7 @@ onMounted(()=>{
     left: 0;
     right: 0;
     bottom: 0;
-    background: url("../../assets/bg/ccc.jpg") no-repeat;
     transition: filter ease-in-out 0.4s, scale ease-in-out 0.8s;
-    background-size: cover;
     max-width: 100%;
     overflow: clip;
 }

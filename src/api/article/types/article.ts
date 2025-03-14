@@ -29,6 +29,12 @@ export interface ArticleAggregates {
     category: Category
 }
 
+export interface ArticlePageQueryDTO{
+    tag: string | undefined,
+    category: string | undefined,
+    keyword: string | undefined
+}
+
 
 export type ArticlePage = ApiResponseData<Page<ArticleAggregates>>
 export type HotArticleResponse = ApiResponseData<ArticleBrief[]>

@@ -7,9 +7,9 @@ import axios from "axios"
 import {merge, get} from "lodash-es"
 import Router from "@/router";
 import {getToken} from "@/utils/local-storage";
-export const baseUrl = 'http://localhost:5173/'
+export const baseUrl = 'http://154.44.26.192:80'
 // export const backendUrl = ''http://103.40.13.88:36785/
-export const backendUrl = 'http://localhost:8082/'
+export const backendUrl = 'http://154.44.26.192:8082/'
 
 function createService() : AxiosInstance{
     const service = axios.create();
@@ -23,7 +23,7 @@ function createService() : AxiosInstance{
             const apiData = response.data
             //二进制数据直接返回
             const responseType = response.request?.responseType
-            if(responseType==="blob" || responseType==="arraybuffer")return apiData
+            if(responseType==="blob" || responseType==="arraybuffer") return apiData
             //
             const code = apiData.code
             if(code===undefined){

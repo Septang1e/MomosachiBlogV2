@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
-import {ElMessage, ElMessageBox, type FormInstance, type FormRules} from 'element-plus'
+import {ElMessage, ElMessageBox, ElNotification, type FormInstance, type FormRules} from 'element-plus'
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue'
 import _ from "lodash";
-import type {ArticleAggregates} from "@/api/article/types/article";
+import type {ArticleAggregates, ArticlePageQueryDTO} from "@/api/article/types/article";
 
 // MdEditor
 
@@ -17,14 +17,30 @@ const loading = ref(false)
 const saveLoading = ref(false)
 const dialogVisible = ref(false)
 const isEdit = ref(false)
-const currentPage = ref(1)
-const pageSize = ref(10)
-const totalArticles = ref(0)
+
+const page_conf : PageConfig = reactive({
+    current: 1,
+    size: 10,
+    total: 0,
+    strategy: PaginationStrategy.DEFAULT_STRATEGY,
+    sort: [SortType.TOP, SortType.UPDATE_TIME_DESC]
+})
+
 const articleFormRef = ref<FormInstance>()
 import { ElTag } from 'element-plus'
+import {createArticle, deleteArticle, queryArticleBackendPage, updateArticle} from "@/api/article";
+import type {PageConfig} from "@/api/page";
+import {PaginationStrategy, SortType} from "@/constant/app-key";
+import {request} from "@/utils/request";
+import {format} from "date-fns";
 
 // 数据列表
 const articles = ref<ArticleAggregates[]>([])
+const queryDTO : ArticlePageQueryDTO = reactive({
+    tag: '',
+    category: '',
+    keyword: ''
+})
 
 
 // 表单数据
@@ -43,10 +59,7 @@ const articleForm = ref<ArticleAggregates>({
         updateTime: '',
         description: ''
     },
-    tags: [
-        {pid: '', name: '', state: 1, articleCount: 0},
-        {pid: '', name: '', state: 1, articleCount: 0}
-    ],
+    tags: [],
     category: {pid: '', name: '', state: 0, articleCount: 0}
 })
 
@@ -66,8 +79,6 @@ const emptyForm = ref<ArticleAggregates>({
         description: ''
     },
     tags: [
-        {pid: '', name: '', state: 0, articleCount: 0},
-        {pid: '', name: '0', state: 0, articleCount: 0}
     ],
     category: {pid: '', name: '', state: 0, articleCount: 0}
 })
@@ -102,29 +113,17 @@ onMounted(() => {
 // 获取文章列表
 const fetchData = () => {
 
-    articles.value.push(...[
-        {
-            article: {
-                pid: 'art001',
-                title: '如何提高Vue3性能：10个实用技巧',
-                content: '<p>Vue 3是现代前端开发中最流行的框架之一，但如果使用不当，可能会导致性能问题。本文将介绍10个提高Vue应用性能的实用技巧...</p>',
-                cover: 'https://example.com/images/vue-performance.jpg',
-                viewCount: 1250,
-                likeCount: 78,
-                heat: 89,
-                setTop: 1,
-                state: 1,
-                createTime: '2025-02-15 14:30:22',
-                updateTime: '2025-03-05 09:12:45',
-                description: 'Vue3性能优化的完整指南，包含代码分割、虚拟列表、defineAsyncComponent等多种技巧'
-            },
-            tags: [
-                {pid: 'tag001', name: 'Vue', state: 1, articleCount: 32},
-                {pid: 'tag002', name: '性能优化', state: 1, articleCount: 18}
-            ],
-            category: {pid: 'cat001', name: '前端开发', state: 1, articleCount: 45}
+
+    queryArticleBackendPage(page_conf, queryDTO).then((res)=>{
+        articles.value.length = 0
+        articles.value.push(...res.data.records)
+        page_conf.total = res.data.total
+
+        for(let item of articles.value) {
+            item.article.createTime = format(item.article.createTime, "yyyy-MM-dd HH:mm")
         }
-    ])
+
+    })
 }
 
 function openEditArticleDialog(index: number) {
@@ -142,15 +141,23 @@ function openAddArticleDialog() {
 }
 
 
-function deleteArticle(pid: string) {
-
+function handleArticleDelete(article: ArticleAggregates) {
+    deleteArticle(article).then((res)=>{
+        ElNotification.success({
+            title: 'Success',
+            message: res.msg
+        })
+    }).finally(()=>{
+        fetchData()
+    })
 }
 
 function handleSizeChange() {
 
 }
 function handleCurrentChange(current: number) {
-
+    page_conf.current = current
+    fetchData()
 }
 
 function handleCoverSuccess() {
@@ -162,8 +169,22 @@ function beforeCoverUpload() {
 }
 
 function saveArticle() {
-
+    queryArticleSaveState().then((res)=>{
+        ElNotification({
+            title: 'Success',
+            message: res.msg,
+            type: "success"
+        })
+    }).finally(()=>{
+        fetchData()
+        dialogVisible.value = false
+    })
 }
+
+function queryArticleSaveState() {
+    return isEdit.value ? updateArticle(articleForm.value) : createArticle(articleForm.value)
+}
+
 
 // 新增状态
 const tagInput = ref('')
@@ -174,7 +195,7 @@ const handleTags = {
     addTag() {
         if (tagInput.value.trim()) {
             const newTag = {
-                pid: `tag_${Date.now()}`,
+                pid: '',
                 name: tagInput.value.trim(),
                 state: 1,
                 articleCount: 0
@@ -188,17 +209,6 @@ const handleTags = {
     }
 }
 
-// 修改分类处理
-const handleCategory = {
-    updateCategory() {
-        articleForm.value.category = {
-            pid: `cat_${Date.now()}`,
-            name: categoryInput.value.trim(),
-            state: 1,
-            articleCount: 0
-        }
-    }
-}
 
 
 </script>
@@ -252,8 +262,8 @@ const handleCategory = {
 
                 <el-table-column label="状态" width="100">
                     <template #default="props">
-                        <el-tag :type="props.row.article.state === 1 ? 'success' : 'info'">
-                            {{ props.row.article.state === 0 ? '已发布' : '草稿' }}
+                        <el-tag :type="props.row.article.state === 1 ? 'success' : 'warning'">
+                            {{ props.row.article.state === 1 ? '已发布' : '草稿' }}
                         </el-tag>
                     </template>
                 </el-table-column>
@@ -267,7 +277,7 @@ const handleCategory = {
 <!--                            <el-button size="small" type="info" @click="previewArticle(row)" :icon="View">预览</el-button>-->
                             <el-popconfirm
                                 title="确定要删除这篇文章吗？"
-                                @confirm="deleteArticle(props.row.article.pid)"
+                                @confirm="handleArticleDelete(props.row)"
                                 confirm-button-text="确定"
                                 cancel-button-text="取消"
                             >
@@ -282,11 +292,11 @@ const handleCategory = {
 
             <div class="pagination-container">
                 <el-pagination
-                    v-model:current-page="currentPage"
-                    v-model:page-size="pageSize"
+                    v-model:current-page="page_conf.current"
+                    v-model:page-size="page_conf.size"
                     :page-sizes="[10, 20, 50, 100]"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="totalArticles"
+                    :total="page_conf.total"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                 />
@@ -357,7 +367,6 @@ const handleCategory = {
                     <el-input
                         v-model="articleForm.category.name"
                         placeholder="输入分类名称"
-                        @blur="handleCategory.updateCategory"
                     />
                 </el-form-item>
 
@@ -407,12 +416,6 @@ const handleCategory = {
                 <el-form-item label="文章内容">
                     <div class="editor-container">
                         <MdEditor v-model="articleForm.article.content"/>
-                        <el-input
-                            v-model="articleForm.article.content"
-                            type="textarea"
-                            :rows="15"
-                            placeholder="请输入文章内容"
-                        />
                     </div>
                 </el-form-item>
 
@@ -572,8 +575,8 @@ const handleCategory = {
 
 .cover-uploader {
     display: block;
-    width: 200px;
-    height: 150px;
+    width: 400px;
+    height: 250px;
     border: 1px dashed var(--admin-border-color);
     border-radius: 6px;
     cursor: pointer;
@@ -604,35 +607,6 @@ const handleCategory = {
     border: 1px solid var(--admin-border-color);
     border-radius: 4px;
     width: 100%;
-}
-
-/* 预览样式 */
-.article-preview {
-    padding: 20px;
-}
-
-.preview-title {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--admin-text);
-}
-
-.preview-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    font-size: 14px;
-    color: var(--admin-sub-text);
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--admin-divider);
-}
-
-.preview-content {
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--admin-text);
 }
 
 /* 响应式调整 */
@@ -682,5 +656,11 @@ const handleCategory = {
 .article-status{
     display: flex;
     align-items: center;
+}
+</style>
+
+<style>
+.content-management .el-table__inner-wrapper{
+    background-color: var(--admin-bg-color) !important;
 }
 </style>

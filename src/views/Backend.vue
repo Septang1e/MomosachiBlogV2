@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import {defineComponent, ref, computed, onMounted, onBeforeMount} from 'vue'
 import { useRoute } from 'vue-router'
 import userAvatar from "@/assets/resource/avatar.jpg"
+import {checkPermissionsForBackend} from "@/api/user";
+import router from "@/router";
+import {setToken} from "@/utils/local-storage";
+import {ElNotification} from "element-plus";
 
 const route = useRoute()
 const isCollapsed = ref(false)
@@ -46,8 +50,30 @@ const toggleTheme = () => {
     isLight.value = !isLight.value
     // 只改变管理界面的主题，不影响前台主题
 }
+const hasPermission = ref(false)
+
+function checkPermissions() {
+    checkPermissionsForBackend()
+        .then((res)=>{
+            hasPermission.value = true
+        }).catch(()=>{
+        setTimeout(()=>{
+            router.back();
+        }, 1500)
+    })
+}
+
+function signOut() {
+    setToken('')
+    router.push("/")
+}
+
+onBeforeMount(()=>{
+
+})
 
 onMounted(() => {
+    checkPermissions()
     // 检查是否有保存的主题设置
     const savedTheme = localStorage.getItem('adminTheme')
     if (savedTheme) {
@@ -60,14 +86,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="backend-container" :class="{'admin-light': isLight, 'admin-dark': !isLight}">
+    <div class="backend-container" :class="{'admin-light': isLight, 'admin-dark': !isLight}" v-if="hasPermission">
         <!-- 左侧侧边栏 -->
         <aside class="sidebar" :class="{ 'sidebar-collapsed': isCollapsed }">
             <div class="logo-container">
-                <div class="logo">
+                <router-link to="/" class="logo">
                     <img src="@/assets/resource/logo.png" alt="Logo" />
-                    <span v-if="!isCollapsed">TwitterAdmin</span>
-                </div>
+                    <span v-if="!isCollapsed">Momosachi</span>
+                </router-link>
                 <button class="collapse-btn" @click="toggleSidebar">
                     <i :class="isCollapsed ? 'icon-expand' : 'icon-collapse'"></i>
                 </button>
@@ -125,6 +151,10 @@ onMounted(() => {
                                 <i :class="isLight ? 'icon-moon' : 'icon-sun'"></i>
                             </button>
                         </div>
+                        <button class="action-btn search-btn" @click="signOut">
+                            <i class="icon-search"></i>退出
+                        </button>
+
                     </div>
                 </div>
             </header>

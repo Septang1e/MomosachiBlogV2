@@ -8,6 +8,7 @@ import Backend from "@/views/Backend.vue";
 import NotFound from "@/views/ErrorPage.vue";
 import DashBoard from "@/components/backend/DashBoard.vue";
 import ArticleBackend from "@/components/backend/ArticlePostPage.vue";
+import EnagementPage from "@/components/backend/EnagementPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,6 +79,11 @@ const router = createRouter({
                     path: '/admin/posts',
                     name: 'admin_article',
                     component: ArticleBackend
+                },
+                {
+                    path: '/admin/engagement',
+                    name: 'admin_engagement',
+                    component: EnagementPage
                 }
             ]
         },

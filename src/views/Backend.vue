@@ -16,9 +16,9 @@ const activeMenu = computed(() => route.meta.activeMenu || route.name)
 const menuItems = ref([
     { key: 'dashboard', title: '仪表盘', icon: 'icon-dashboard', path: '/admin/dashboard' },
     { key: 'posts', title: '内容管理', icon: 'icon-posts', path: '/admin/posts', badge: '12' },
+    { key: 'engagement', title: '互动管理', icon: 'icon-engagement', path: '/admin/engagement' },
     { key: 'users', title: '用户管理', icon: 'icon-users', path: '/admin/users' },
     { key: 'analytics', title: '数据分析', icon: 'icon-analytics', path: '/admin/analytics' },
-    { key: 'engagement', title: '互动管理', icon: 'icon-engagement', path: '/admin/engagement' },
     { key: 'trends', title: '趋势管理', icon: 'icon-trends', path: '/admin/trends' },
     { key: 'ads', title: '广告管理', icon: 'icon-ads', path: '/admin/ads' },
     { key: 'settings', title: '系统设置', icon: 'icon-settings', path: '/admin/settings' }

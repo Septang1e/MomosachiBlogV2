@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {queryCategoryRank} from "@/api/category";
+import {queryCategoryPage} from "@/api/category";
 import type {Category} from "@/api/category/types/category";
 
 const categoryData = ref<Category[]>([])
 function queryCategoryData() {
-    queryCategoryRank().then(res => {
+    queryCategoryPage(1, 6).then(res => {
         res.data.map(item => {
             categoryData.value.push(item)
         })

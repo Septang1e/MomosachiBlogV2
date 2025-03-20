@@ -59,6 +59,8 @@ function match(s: string | undefined) {
 }
 watch(()=>route.fullPath, ()=>{
     currentRoute.value = <string>route.name
+    menuDrawerRef.value = false
+    searchBoxDialogRef.value = false
 })
 function scrollEventListener() {
     handleHeaderVisibilityState()

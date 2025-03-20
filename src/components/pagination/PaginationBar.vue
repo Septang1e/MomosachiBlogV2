@@ -7,9 +7,11 @@ const props = defineProps<{
     size : number,
     total : number
 }>()
-const emits = defineEmits<{
-    (event: 'currentChange', current: number) : void;
-}>()
+const emits = defineEmits({
+    currentChange: (current: number) => {
+        return !!current;
+    }
+})
 
 const page_count = computed(()=>{
     const size = props.size
@@ -74,9 +76,9 @@ function currentChange(current : number) {
     emits('currentChange', current)
 }
 // starting of the function of
-const expand = ref(window.innerWidth > 400)
+const expand = ref(window.innerWidth > 468)
 function onResize() {
-    expand.value = window.innerWidth > 400
+    expand.value = window.innerWidth > 468
 }
 
 watch(()=> props.total, ()=>{

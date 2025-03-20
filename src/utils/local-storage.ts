@@ -7,6 +7,15 @@ export function setToken(token: string) {
 export function getToken() {
     return localStorage.getItem(CacheKey.TOKEN)
 }
+
+export function getSession() {
+    return localStorage.getItem(CacheKey.SESSION)
+}
+
+export function setSession(session: string) {
+    localStorage.setItem(CacheKey.SESSION, session)
+}
+
 export function setTheme(theme: string) {
     localStorage.setItem(CacheKey.THEME, theme)
 }

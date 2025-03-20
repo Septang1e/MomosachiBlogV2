@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
 import {reactive, ref, watch} from "vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {autocompleteArticleSearchKeyword} from "@/api/article";
 
 const delIconVisible = ref(false)
-const keyword = ref()
+const keyword = ref("")
+const route = useRoute()
 const autocompleteDataSet = ref<string[]>([
 ])
 const router = useRouter()
@@ -30,6 +31,10 @@ const handleSearchKeydown = (event : KeyboardEvent) =>{
 const onSearch = () => {
     if(keyword.value.length === 0) return
     router.push(`/search?keyword=${keyword.value}`)
+    scroll({
+        top: 0,
+        behavior: "smooth"
+    })
 }
 const fillAndSearch = (item : string) => {
     keyword.value = item
@@ -127,7 +132,7 @@ watch(()=>keyword.value, ()=>{
 .autocomplete-wrap{
     position: absolute;
     top: 50px;
-    width: 240px;
+    width: 180px;
     left: 0;
     padding: 8px;
     height: fit-content;

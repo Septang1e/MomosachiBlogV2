@@ -8,7 +8,10 @@ const props = defineProps<{
   comment: Comment;
 }>();
 const appStore = useAppStore()
-
+import DefaultAvatar from "@/assets/bg/DefaultAvatar.jpg"
+import {onMounted, ref} from "vue";
+import {toggleCommentLike} from "@/api/comment";
+import {ElNotification} from "element-plus";
 
 
 const formatTime = (timestamp: number): string => {
@@ -38,13 +41,10 @@ const formatWebsite = (website: string): string => {
 };
 
 const formatUrl = (website : string) : string => {
-
     if(!website.startsWith("http://") && !website.startsWith("https://")) {
         website = `https://${website}`
     }
-
     return website
-
 }
 
 const formatContent = (content: string): string => {
@@ -64,13 +64,41 @@ const handleReply = () => {
     appStore.setReplyTo(props.comment.commentId)
 }
 
+const likeState = ref(false)
+function handleLike() {
+
+    if(!props.comment) return
+
+    toggleCommentLike(props.comment.commentId).then(()=>{
+        likeCount.value = likeCount.value + (likeState.value ? -1 : 1)
+        likeState.value = !likeState.value
+    })
+}
+
+const userAvatar = ref("")
+const likeCount = ref(0)
+
+onMounted(()=>{
+    if(props.comment && props.comment.user.avatar && props.comment.user.avatar !== '') {
+        userAvatar.value = props.comment.user.avatar
+    }else{
+        userAvatar.value = DefaultAvatar
+    }
+
+    if(props.comment) {
+        likeState.value = props.comment.likeState
+        likeCount.value = props.comment.likes
+    }
+
+})
+
 </script>
 
 <template>
   <div class="comment-item">
     <div class="avatar-container">
         <img
-            :src="AdminAvatar"
+            :src="userAvatar"
             alt="User Avatar"
             class="avatar" />
     </div>
@@ -89,10 +117,13 @@ const handleReply = () => {
       <div class="comment-text" v-html="formatContent(comment.content)"></div>
 
       <div class="comment-actions">
-<!--        <button class="action-button like-button">-->
-<!--          <el-icon class="bx bx-like"/>-->
-<!--          <span v-if="comment.likes >= 0">{{ comment.likes }}</span>-->
-<!--        </button>-->
+        <button
+            :class="likeState ? 'is-liked' : ''"
+            class="action-button like-button"
+            @click="handleLike">
+          <el-icon class="bx bx-like"/>
+            <span v-if="likeCount > 0">{{ likeCount }}</span>
+        </button>
         <button class="action-button reply-button" @click="handleReply">
           {{ comment.commentId === appStore.getReplyTo() ? '取消回复' : '回复' }}
         </button>
@@ -192,7 +223,18 @@ const handleReply = () => {
     font-size: 0.9em;
 }
 
+.like-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .action-button:hover {
+    background-color: var(--var-c-hover-bg);
+    color: var(--var-c-hover-text);
+}
+
+.is-liked{
     background-color: var(--var-c-hover-bg);
     color: var(--var-c-hover-text);
 }

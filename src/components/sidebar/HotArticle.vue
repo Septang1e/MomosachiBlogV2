@@ -1,8 +1,7 @@
 <script setup lang="ts">
 
-import Divider from "@/components/sub/Divider.vue";
 import {computed, onMounted, reactive, ref, watch} from "vue";
-import cover from "@/assets/bg/ccc.jpg"
+import DefaultBg from "@/assets/bg/Gfot-H6a8AATTdh.jpg"
 import {queryArticleRank} from "@/api/article";
 import type {ArticleBrief} from "@/api/article/types/article";
 import {useAppStore} from "@/stores";
@@ -15,6 +14,11 @@ function queryHotArticleData() {
         hot_articles.value.length = 0
         res.data.map(item => {
             hot_articles.value.push(item)
+
+            if(!item.cover || item.cover === '') {
+                item.cover = DefaultBg
+            }
+
         })
     })
 }
@@ -36,6 +40,8 @@ watch(()=>appStore.getCurrentArticlePid(), ()=>{
     currentPid.value = appStore.getCurrentArticlePid()
 })
 
+
+
 onMounted(()=>{
     queryHotArticleData()
 })
@@ -56,7 +62,7 @@ onMounted(()=>{
                          @mousemove="onFocus(item.pid)"
                          @mouseleave="onBlur">
                 <div class="article-sub-cover">
-                    <el-image :src="cover" fit="cover" style="height: 70px; width: 70px; border-radius: 8px"/>
+                    <el-image class="pic" :src="item.cover" fit="cover" style="height: 70px; width: 70px; border-radius: 8px"/>
                 </div>
                 <div class="article-info">
                     <div class="title">
@@ -150,5 +156,8 @@ onMounted(()=>{
     display: flex;
     align-items: center;
     justify-content: end;
+}
+.pic{
+    image-rendering: high-quality;
 }
 </style>

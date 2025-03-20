@@ -26,6 +26,7 @@ const commentForm = ref<Comment>({
     createTime: 0,
     updateTime: 0,
     likes: 0,
+    likeState: false,
     user: {
         uid: '',
         nickname: '',
@@ -44,6 +45,7 @@ const emptyForm = ref<Comment>({
     createTime: 0,
     updateTime: 0,
     likes: 0,
+    likeState: false,
     user: {
         uid: '',
         nickname: '',

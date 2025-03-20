@@ -2,10 +2,10 @@
 import {useAppStore} from "@/stores";
 import {ElInput, ElButton, ElLoading} from 'element-plus'
 import CoverSideImg from "@/assets/bg/A.jpg"
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {Lock, User} from "@element-plus/icons-vue";
 import type {LoginForm} from "@/api/user/types/user";
-import {applyForAuth} from "@/api/user";
+import {applyForAuth, checkPermissionsForBackend} from "@/api/user";
 import {getToken, setToken} from "@/utils/local-storage";
 import router from "@/router";
 
@@ -16,6 +16,14 @@ const login_form = ref<LoginForm>({
 })
 const isLoading = ref(false)
 const isError = ref(false)
+
+function verifyToken() {
+    checkPermissionsForBackend().then(()=>{
+        router.push("/admin/dashboard")
+    }).catch(()=>{
+
+    })
+}
 
 async function handleLogin() {
     isLoading.value = true
@@ -31,6 +39,11 @@ async function handleLogin() {
     })
 
 }
+
+onMounted(()=>{
+    verifyToken()
+})
+
 </script>
 
 <template>

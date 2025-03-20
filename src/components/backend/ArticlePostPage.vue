@@ -57,6 +57,7 @@ const articleForm = ref<ArticleAggregates>({
         state: 0,
         createTime: '',
         updateTime: '',
+        likeState: false,
         description: ''
     },
     tags: [],
@@ -74,6 +75,7 @@ const emptyForm = ref<ArticleAggregates>({
         heat: 0,
         setTop: 0,
         state: 0,
+        likeState: false,
         createTime: '',
         updateTime: '',
         description: ''
@@ -127,16 +129,14 @@ const fetchData = () => {
 }
 
 function openEditArticleDialog(index: number) {
-    console.log(index)
     isEdit.value = true
-    console.log(articles.value[index])
-    articleForm.value = _.cloneDeep(articles.value[index])
+    articleForm.value = articles.value[index]
     dialogVisible.value = true
 }
 
 function openAddArticleDialog() {
     isEdit.value = false
-    articleForm.value = _.cloneDeep(emptyForm.value)
+    // articleForm.value = _.cloneDeep(emptyForm.value)
     dialogVisible.value = true
 }
 
@@ -182,6 +182,8 @@ function saveArticle() {
 }
 
 function queryArticleSaveState() {
+    articleForm.value.article.createTime = ''
+    articleForm.value.article.createTime = ''
     return isEdit.value ? updateArticle(articleForm.value) : createArticle(articleForm.value)
 }
 
@@ -224,7 +226,7 @@ const handleTags = {
             <el-table
                 :data="articles"
                 style="width: 100%"
-                border
+                :border="false"
                 v-loading="loading"
             >
                 <el-table-column label="文章标题" min-width="180">
@@ -308,7 +310,6 @@ const handleTags = {
             v-model="dialogVisible"
             :title="isEdit ? '编辑文章' : '新增文章'"
             width="80%"
-            destroy-on-close
             class="article-dialog"
         >
             <el-form
@@ -430,36 +431,6 @@ const handleTags = {
 </template>
 
 <style scoped>
-
-.article-dialog {
-    :deep(.el-dialog) {
-        background: var(--admin-bg-panel);
-        border-radius: 12px;
-        border: 1px solid var(--admin-border-color);
-        box-shadow: var(--admin-card-shadow);
-
-        .el-dialog__header {
-            border-bottom: 1px solid var(--admin-divider);
-            margin-right: 0;
-
-            .el-dialog__title {
-                color: var(--admin-text);
-                font-size: 18px;
-                font-weight: 600;
-            }
-        }
-
-        .el-dialog__body {
-            padding: 20px;
-        }
-
-        .el-dialog__footer {
-            border-top: 1px solid var(--admin-divider);
-            padding: 16px 20px;
-        }
-    }
-}
-
 .tags-container {
     border: 1px solid var(--admin-border-color);
     border-radius: 4px;
@@ -634,25 +605,6 @@ const handleTags = {
     transition: all 0.3s ease;
 }
 
-/* 自定义滚动条 */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--admin-primary-blue);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--admin-blue-dark);
-}
 .article-status{
     display: flex;
     align-items: center;
@@ -662,5 +614,40 @@ const handleTags = {
 <style>
 .content-management .el-table__inner-wrapper{
     background-color: var(--admin-bg-color) !important;
+}
+.article-dialog {
+    :deep(.el-dialog) {
+        background: var(--admin-bg-panel);
+        border-radius: 12px;
+        border: 1px solid var(--admin-border-color);
+        box-shadow: var(--admin-card-shadow);
+
+        .el-dialog__header {
+            border-bottom: 1px solid var(--admin-divider);
+            margin-right: 0;
+
+            .el-dialog__title {
+                color: var(--admin-text);
+                font-size: 18px;
+                font-weight: 600;
+            }
+        }
+
+        .el-dialog__body {
+            padding: 20px;
+        }
+
+        .el-dialog__footer {
+            border-top: 1px solid var(--admin-divider);
+            padding: 16px 20px;
+        }
+    }
+}
+.el-table tbody tr:hover {
+    background-color: var(--var-c-bg-main) !important; /* 这里修改鼠标悬停颜色 */
+}
+
+.el-table__row td{
+    background-color: transparent !important;
 }
 </style>

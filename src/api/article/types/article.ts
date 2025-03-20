@@ -13,6 +13,7 @@ export interface Article{
     heat: number,
     setTop: number,
     state: number,
+    likeState: boolean,
     createTime: string,
     updateTime: string,
     description: string

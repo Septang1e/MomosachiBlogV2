@@ -31,6 +31,7 @@ const articleData = ref<ArticleAggregates>({
         heat: 0,
         setTop: 0,
         state: 0,
+        likeState: false,
         createTime: "",
         updateTime: "",
         description: "",
@@ -52,8 +53,7 @@ function queryArticleData() {
     queryArticle(<string>route.params['id']).then(res => {
         articleData.value = res.data
         md_state.text = res.data.article.content
-        likeState.value = getCurrentLikeState(articleData.value.article.pid)
-        appStore.setArticlePid(articleData.value.article.pid)
+        likeState.value = res.data.article.likeState
     }).catch(()=>{
         router.push("/error")
     })
@@ -77,7 +77,7 @@ import MdEditorCatalog from "@/components/sub/MdEditorCatalog.vue";
 import {useAppStore} from "@/stores";
 import {getCurrentLikeState, setLikeState} from "@/utils/local-storage";
 import {ArticleLikeState, ResponseCode} from "@/constant/app-key";
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox, ElNotification} from "element-plus";
 import CommentCard from "@/components/card/comment/CommentCard.vue";
 
 const md_state = reactive({
@@ -123,37 +123,19 @@ function sideBarMovementHandler() {
 
 function likeButtonClickEvent() {
     const pid = articleData.value.article.pid
-    if(likeState.value){
-        cancelThumbUp(pid).then((res)=>{
-            switch (res.code) {
-                case ResponseCode.SUCCESS:
-                    articleData.value.article.likeCount = Number(articleData.value.article.likeCount) - 1
-                    setLikeState(pid, ArticleLikeState.NOT_LIKE)
-                    likeState.value = false
-                    break
-                case ResponseCode.DUPLICATE_OPERATION:
-                    setLikeState(pid, ArticleLikeState.IS_LIKED)
-                    likeState.value = false
-                    ElMessage.error("数据有点不同步啦，当前IP已经取消过点赞了喵")
-            }
-        })
-    }else{
-        thumbUp(pid).then((res)=>{
-            switch (res.code) {
-                case ResponseCode.SUCCESS:
-                    articleData.value.article.likeCount = Number(articleData.value.article.likeCount) + 1
-                    setLikeState(pid, ArticleLikeState.IS_LIKED)
-                    likeState.value = true
-                    ElMessage.success("感谢点赞喵~")
-                    break
-                case ResponseCode.DUPLICATE_OPERATION:
-                    setLikeState(pid, ArticleLikeState.NOT_LIKE)
-                    likeState.value = true
-                    ElMessage.error("你已经点过赞啦")
 
-            }
-        })
-    }
+    thumbUp(pid).then((res)=>{
+        likeState.value = !likeState.value
+        if(!likeState.value) {
+            articleData.value.article.likeCount = Number(articleData.value.article.likeCount) - 1
+        }else{
+            ElNotification.success("感谢点赞喵~")
+            articleData.value.article.likeCount = Number(articleData.value.article.likeCount) + 1
+        }
+
+    }).catch(()=>{
+        ElNotification.error("你已经点过赞啦")
+    })
 }
 
 const cardSetHeight = ref(0)
@@ -204,7 +186,7 @@ onUnmounted(()=>{
         <div class="time-info">
             <div class="time-text create-time">
                 <el-icon class="bx bx-calendar"/>
-                {{getDateTime(Number(articleData.article.updateTime))}}
+                {{getDateTime(Number(articleData.article.createTime))}}
             </div>
             <div class="time-text update-time">
                 <el-icon class="bx bx-history"/>
@@ -396,6 +378,9 @@ a{
     }
     .content-wrap{
         max-width: 100vw;
+    }
+    #title{
+        font-size: 28px !important;
     }
 }
 .time-info{

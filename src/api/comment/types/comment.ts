@@ -11,6 +11,7 @@ export interface Comment {
     updateTime: number,
     articlePid: string,
     likes: number,
+    likeState: boolean,
     user: User,
     state: number,
 }

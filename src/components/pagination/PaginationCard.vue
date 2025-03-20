@@ -204,6 +204,9 @@ const handleDynamicBackground = () => {
     .description{
         max-width: 80vw;
     }
+    #title{
+        font-size: 25px;
+    }
 }
 @media (min-width: 768px) {
     .description{

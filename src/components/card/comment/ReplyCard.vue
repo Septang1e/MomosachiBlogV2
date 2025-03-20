@@ -38,6 +38,7 @@ const emptyForm = ref<Comment>({
     createTime: Date.now(),
     updateTime: Date.now(),
     likes: 66,
+    likeState: false,
     user: {
         uid: '',
         nickname: 'cscscscsc',

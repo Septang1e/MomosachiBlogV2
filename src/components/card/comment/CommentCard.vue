@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, nextTick, watch} from 'vue'
+import {ref, onMounted, nextTick, watch, onUnmounted} from 'vue'
 import type {Comment, CommentQueryDTO} from "@/api/comment/types/comment";
 import CommentSubmitCard from "@/components/card/comment/CommentSubmitCard.vue";
 import {useAppStore} from "@/stores";
@@ -24,6 +24,7 @@ const emptyForm = ref<Comment>({
     createTime: Date.now(),
     updateTime: Date.now(),
     likes: 66,
+    likeState: false,
     user: {
         uid: '',
         nickname: 'cscscscsc',
@@ -52,10 +53,13 @@ const commentQueryDTO : CommentQueryDTO = reactive({
 })
 
 const queryCommentData = () => {
+    loading.value = true
     queryCommentPage(commentQueryDTO, page_conf).then((res) => {
         page_conf.total = res.data.total
         comments.value.push(...res.data.records)
         hasMore.value = page_conf.current * page_conf.size < page_conf.total
+    }).finally(()=>{
+        loading.value = false
     })
 }
 
@@ -63,6 +67,13 @@ function onSubmitted(comment : Comment) {
 
 }
 
+function scrollEventHandler() {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (!loading.value && hasMore.value && scrollTop + clientHeight >= scrollHeight - 10) {
+        page_conf.current++
+        queryCommentData()
+    }
+}
 
 function initData() {
     page_conf.current = 1
@@ -73,13 +84,19 @@ function initData() {
 onMounted(()=>{
     initData()
     queryCommentData()
+    addEventListener('scroll', scrollEventHandler)
 })
+
+onUnmounted(()=>{
+    removeEventListener('scroll', scrollEventHandler)
+})
+
 </script>
 
 <template>
     <div class="comment-card">
         <div class="comment-title-wrap">
-            <h3 class="comment-title">{{totalComment}}条评论</h3>
+            <h3 class="comment-title">评论</h3>
             <el-icon/>
         </div>
 

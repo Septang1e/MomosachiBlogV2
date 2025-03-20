@@ -6,6 +6,7 @@ import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {useAppStore} from "@/stores";
 import ToolBar from "@/components/sidebar/ToolBar.vue";
 import {generateThemeColorSet} from "@/utils/theme-utils";
+import {getSession, setSession} from "@/utils/local-storage";
 
 const appStore = useAppStore()
 const route = useRoute()
@@ -52,10 +53,25 @@ function onScroll() {
         })
     }
 }
+
+function generateRandomString() {
+    return crypto.randomUUID()
+}
+
+function handelSessionId() {
+
+    const session = getSession()
+    if (!session || session === '') {
+        const uuid = generateRandomString();
+        let result = uuid.replace("-", "").substring(0, 12);
+        setSession(result)
+    }
+}
+
 onMounted(()=>{
     handleResize()
+    handelSessionId()
     addEventListener('resize', handleResize)
-    console.log(colorSet)
 })
 onUnmounted(()=>{
     removeEventListener('resize', handleResize)
